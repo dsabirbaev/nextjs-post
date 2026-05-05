@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import Container from '@/components/Container';
 import { auth } from '@/../auth';
+import ChangePasswordForm from '@/ui/change-password-form';
 export const metadata: Metadata = {
   title: 'About',
 };
 
 export default async function Page() {
   const session = await auth();
-  console.log('Session in About page:', session);
   return (
     <Container>
       <h1 className="text-3xl font-medium text-gray-900 mt-4 mb-3 text-center">
@@ -20,6 +20,7 @@ export default async function Page() {
           ? `Your email: ${session.user.email}`
           : 'Please log in to see your email.'}
       </h4>
+      <ChangePasswordForm />
     </Container>
   );
 }

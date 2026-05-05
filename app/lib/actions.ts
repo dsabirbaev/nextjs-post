@@ -134,6 +134,53 @@ export async function logout(): Promise<void> {
   await signOut({ redirectTo: '/login' });
 }
 
+export async function changePassword(
+  prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
+  const session = await auth();
+  if (!session?.user) redirect('/login');
+
+  const oldPassword = formData.get('oldPassword') as string;
+  const newPassword = formData.get('newPassword') as string;
+
+  if (!oldPassword || !newPassword) return 'Both passwords are required';
+
+  // ✅ получаем текущий пароль из базы
+  const { data: user } = await supabase
+    .from('users')
+    .select('password')
+    .eq('id', session.user.id)
+    .single();
+
+  if (!user) return 'User not found';
+
+  // ✅ проверяем старый пароль
+  const isValid = await bcrypt.compare(oldPassword, user.password);
+  if (!isValid) return 'Current password is incorrect';
+
+  // ✅ хэшируем новый
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const { error } = await supabase
+    .from('users')
+    .update({ password: hashedPassword })
+    .eq('id', session.user.id);
+
+  if (error) return 'Something went wrong';
+
+  // ✅ логиним с новым паролем
+  try {
+    await signIn('credentials', {
+      email: session.user.email,
+      password: newPassword,
+      redirectTo: '/',
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
 /// Комментарии post
 
 export async function createComment(

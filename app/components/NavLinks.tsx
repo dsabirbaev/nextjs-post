@@ -11,8 +11,8 @@ export default function NavLinks() {
       <Link
         href="/"
         className={clsx('text-sm hover:text-gray-900', {
-          'text-gray-900 font-medium': pathname === '/',
-          'text-gray-500': pathname !== '/',
+          'text-gray-900 font-medium dark:text-white': pathname === '/',
+          'text-gray-500 dark:text-gray-400': pathname !== '/',
         })}
       >
         Home
@@ -21,8 +21,8 @@ export default function NavLinks() {
       <Link
         href="/posts"
         className={clsx('text-sm hover:text-gray-900', {
-          'text-gray-900 font-medium': pathname === '/posts',
-          'text-gray-500': pathname !== '/posts',
+          'text-gray-900 font-medium dark:text-white': pathname === '/posts',
+          'text-gray-500 dark:text-gray-400': pathname !== '/posts',
         })}
       >
         Posts
@@ -31,8 +31,8 @@ export default function NavLinks() {
       <Link
         href="/about"
         className={clsx('text-sm hover:text-gray-900', {
-          'text-gray-900 font-medium': pathname === '/about',
-          'text-gray-500': pathname !== '/about',
+          'text-gray-900 font-medium dark:text-white': pathname === '/about',
+          'text-gray-500 dark:text-gray-400': pathname !== '/about',
         })}
       >
         About
