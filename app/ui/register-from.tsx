@@ -1,6 +1,9 @@
 'use client';
-import { useState, useActionState } from 'react';
-import { login } from '@/lib/actions';
+
+import { lusitana } from './fonts';
+import { useState } from 'react';
+import { useActionState } from 'react';
+import { register } from '@/lib/actions';
 import Link from 'next/link';
 import { FieldSet, FieldGroup, Field, FieldLabel } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
@@ -11,8 +14,8 @@ import {
   MailIcon,
   EyeIcon,
   EyeOffIcon,
-  MoveLeft,
   KeyRound,
+  CircleUser,
 } from 'lucide-react';
 import {
   InputGroupAddon,
@@ -20,23 +23,34 @@ import {
   InputGroupInput,
 } from '@/components/ui/input-group';
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const [errorMessage, formAction, isPending] = useActionState(
-    login,
+    register,
     undefined
   );
   const [showPassword, setShowPassword] = useState(false);
-  console.log('errorMessage', errorMessage);
   return (
     <form action={formAction}>
       <FieldSet className="w-full p-5">
         <FieldGroup>
-          <Link
-            href="/"
-            className="text-base font-medium text-gray-900 mb-1 dark:text-white text-xs"
-          >
-            <MoveLeft className="size-4 inline" /> Welcome back
-          </Link>
+          <h3 className={`${lusitana.className} mb-3 text-2xl text-center`}>
+            Register Account
+          </h3>
+          <Field>
+            <FieldLabel htmlFor="name">Name</FieldLabel>
+            <InputGroup>
+              <InputGroupInput
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Enter your name"
+                required
+              />
+              <InputGroupAddon>
+                <CircleUser />
+              </InputGroupAddon>
+            </InputGroup>
+          </Field>
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <InputGroup>
@@ -45,6 +59,7 @@ export default function LoginForm() {
                 name="email"
                 id="email"
                 placeholder="Enter your email"
+                required
               />
               <InputGroupAddon>
                 <MailIcon />
@@ -83,14 +98,13 @@ export default function LoginForm() {
               disabled={isPending}
               size="lg"
               className="cursor-pointer"
-              data-icon="inline-end"
             >
               {isPending ? (
                 <>
                   <Spinner className="size-4" /> <span>Please wait</span>
                 </>
               ) : (
-                'Sign In'
+                'Create account'
               )}
             </Button>
           </Field>
@@ -106,12 +120,12 @@ export default function LoginForm() {
 
           <Field>
             <div className="text-center text-sm text-gray-500">
-              No account?{' '}
+              Already have an account?{' '}
               <Link
-                href="/register"
+                href="/login"
                 className="text-gray-900 font-medium hover:underline"
               >
-                Create one
+                Sign in
               </Link>
             </div>
           </Field>

@@ -114,7 +114,7 @@ export async function register(
 export async function login(prevState: string | undefined, formData: FormData) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
-
+  console.log('login action', email, password);
   try {
     await signIn('credentials', {
       email,

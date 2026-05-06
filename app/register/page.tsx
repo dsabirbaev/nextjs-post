@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import RegisterForm from '@/ui/register-form';
 import { Suspense } from 'react';
+import RegisterForm from '@/ui/register-from';
 export const metadata: Metadata = {
   title: 'Register',
 };
