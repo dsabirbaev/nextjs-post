@@ -29,7 +29,7 @@ export default function LoginForm() {
   console.log('errorMessage', errorMessage);
   return (
     <form action={formAction}>
-      <FieldSet className="w-full p-5">
+      <FieldSet className="w-full p-5 dark:bg-gray-900">
         <FieldGroup>
           <Link
             href="/"
@@ -72,7 +72,11 @@ export default function LoginForm() {
                   className="cursor-pointer bg-transparent text-gray-800"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  {showPassword ? (
+                    <EyeOffIcon className="dark:text-gray-400" />
+                  ) : (
+                    <EyeIcon className="dark:text-gray-400" />
+                  )}
                 </Button>
               </InputGroupAddon>
             </InputGroup>
@@ -82,7 +86,7 @@ export default function LoginForm() {
               type="submit"
               disabled={isPending}
               size="lg"
-              className="cursor-pointer"
+              className="cursor-pointer dark:bg-white dark:text-gray-500"
               data-icon="inline-end"
             >
               {isPending ? (
@@ -105,11 +109,11 @@ export default function LoginForm() {
           </Field>
 
           <Field>
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-gray-400">
               No account?{' '}
               <Link
                 href="/register"
-                className="text-gray-900 font-medium hover:underline"
+                className="text-gray-900 font-medium hover:underline dark:text-gray-400"
               >
                 Create one
               </Link>

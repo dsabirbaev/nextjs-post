@@ -1,4 +1,4 @@
-export function PostSkeleton() {
+export function CardSkeleton() {
   return (
     <div className="border border-gray-100 rounded-xl p-6 animate-pulse">
       {/* Title */}
@@ -10,5 +10,16 @@ export function PostSkeleton() {
       {/* Date */}
       <div className="h-3 w-24 bg-gray-100 rounded" />
     </div>
+  );
+}
+
+export function CardsSkeleton() {
+  return (
+    <>
+      <CardSkeleton />
+      <CardSkeleton />
+      <CardSkeleton />
+      <CardSkeleton />
+    </>
   );
 }

@@ -22,7 +22,6 @@ export default function CreatePostPage() {
           <Link href="/" className="text-sm text-gray-500 hover:text-gray-900">
             ← Back
           </Link>
-          <span className="text-sm font-medium text-gray-900">New post</span>
         </div>
 
         <form action={formAction} className="px-10 py-8">
