@@ -1,15 +1,22 @@
 'use client';
 import { useActionState } from 'react';
 import { createComment } from '@/lib/actions';
-import Link from 'next/link';
-import { Button } from '@/ui/button';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+import { Field } from '@/components/ui/field';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { AlertCircleIcon } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 
 type Comment = {
   id: string;
   content: string;
   user_id: string;
   created_at: string;
-  users: { name: string };
+  reply_id: string;
+  users: {
+    name: string;
+  };
 };
 
 type Props = {
@@ -19,6 +26,7 @@ type Props = {
 };
 
 export default function Comments({ postId, comments, isLoggedIn }: Props) {
+  console.log('comments ', comments);
   const createCommentWithId = createComment.bind(null, postId);
   const [error, formAction, isPending] = useActionState(
     createCommentWithId,
@@ -26,7 +34,7 @@ export default function Comments({ postId, comments, isLoggedIn }: Props) {
   );
 
   return (
-    <div className="mt-10 border-t border-gray-100 pt-8">
+    <div className="mt-5 border-t border-gray-100 pt-5">
       <h2 className="text-base font-medium text-gray-900 mb-6">
         Comments ({comments.length})
       </h2>
@@ -67,36 +75,42 @@ export default function Comments({ postId, comments, isLoggedIn }: Props) {
       {/* Форма */}
       {isLoggedIn ? (
         <form action={formAction} className="flex flex-col gap-2">
-          {error && <p className="text-xs text-red-500">{error}</p>}
-          <div className="flex gap-3">
-            <input
-              type="text"
+          <div className="flex flex-col gap-2 items-end">
+            <Textarea
               name="content"
-              placeholder="Write a comment..."
-              required
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-gray-900"
+              placeholder="Type your message here."
+              className="min-h-[120px]"
             />
             <Button
-              aria-disabled={isPending}
-              className="px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50"
+              disabled={isPending}
+              size="lg"
+              className="bg-gray-900 text-white hover:bg-gray-700 disabled:opacity-50 cursor-pointer w-50"
             >
               {isPending ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                <>
+                  <Spinner className="size-4" />
+                </>
               ) : (
                 'Send'
               )}
             </Button>
           </div>
+          <Field>
+            {error && (
+              <Alert variant="destructive" className="text-xs">
+                <AlertCircleIcon className="size-4" />
+                <AlertTitle>{error}</AlertTitle>
+              </Alert>
+            )}
+          </Field>
         </form>
       ) : (
-        <div className="text-sm text-gray-500 border border-gray-100 p-2">
-          <Link
-            href="/login"
-            className="text-gray-900 font-medium hover:underline"
-          >
-            Sign In
-          </Link>{' '}
-          to leave a comment
+        <div className="">
+          <Textarea
+            name="content"
+            placeholder="Sign In to leave a comment"
+            disabled
+          />
         </div>
       )}
     </div>

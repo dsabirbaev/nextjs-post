@@ -6,6 +6,8 @@ import Container from '@/components/Container';
 import { notFound } from 'next/navigation';
 import Comments from '@/components/Comments';
 import Likes from '@/components/Likes';
+import { MoveLeft } from 'lucide-react';
+import PostDetail from '@/components/PostDetail';
 
 export const metadata: Metadata = {
   title: 'Post Details',
@@ -35,27 +37,12 @@ export default async function Page({
     <Container>
       <Link
         href="/"
-        className="text-sm text-gray-500 hover:text-gray-900 mb-8 block"
+        className="text-sm text-gray-500 hover:text-gray-900 mb-8 flex gap-1"
       >
-        ← Back
+        <MoveLeft className="w-4 h-4" /> Back
       </Link>
 
-      <h1 className="text-3xl font-medium text-gray-900 mt-4 mb-3">
-        {post.title}
-      </h1>
-
-      <p className="text-xs text-gray-400 mb-8 pb-8 border-b border-gray-100">
-        myBlog ·{' '}
-        {new Date(post.created_at).toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        })}
-      </p>
-
-      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-        {post.content}
-      </p>
+      <PostDetail post={post} />
 
       <Likes
         postId={id}

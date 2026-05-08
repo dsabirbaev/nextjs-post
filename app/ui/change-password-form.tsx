@@ -101,6 +101,7 @@ export default function ChangePasswordForm() {
               size="lg"
               className="cursor-pointer"
               data-icon="inline-end"
+              variant="outline"
             >
               {isPending ? (
                 <>
