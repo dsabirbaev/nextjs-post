@@ -20,7 +20,7 @@ export const authConfig = {
       }
 
       // защищённые страницы
-      const protectedRoutes = ['/add'];
+      const protectedRoutes = ['/add', '/profile', '/settings'];
       if (protectedRoutes.some((r) => pathname.startsWith(r))) {
         if (isLoggedIn) return true;
         return false; // незалогинен — редиректим на login

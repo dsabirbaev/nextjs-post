@@ -1,13 +1,15 @@
-import { getPost, getComments, getLikesCount, getUserLike } from '@/lib/data';
+import { getPost, getLikesCount, getUserLike } from '@/lib/data';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { auth } from '@/../auth';
 import Container from '@/components/Container';
 import { notFound } from 'next/navigation';
-import Comments from '@/components/Comments';
 import Likes from '@/components/Likes';
 import { MoveLeft } from 'lucide-react';
 import PostDetail from '@/components/PostDetail';
+import PostComments from '@/components/PostComments';
+import { Suspense } from 'react';
+import PostCommentsSkeleton from '@/ui/skeletons';
 
 export const metadata: Metadata = {
   title: 'Post Details',
@@ -24,9 +26,8 @@ export default async function Page({
   const session = await auth();
 
   // ✅ потом всё остальное
-  const [post, comments, likesCount, userLiked] = await Promise.all([
+  const [post, likesCount, userLiked] = await Promise.all([
     getPost(id),
-    getComments(id),
     getLikesCount(id),
     session?.user ? getUserLike(id, session.user.id) : Promise.resolve(false),
   ]);
@@ -51,7 +52,9 @@ export default async function Page({
         userLiked={userLiked}
       />
 
-      <Comments postId={id} comments={comments} isLoggedIn={!!session?.user} />
+      <Suspense fallback={<PostCommentsSkeleton />}>
+        <PostComments postId={id} />
+      </Suspense>
     </Container>
   );
 }

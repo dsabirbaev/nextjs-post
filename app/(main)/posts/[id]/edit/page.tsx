@@ -26,7 +26,9 @@ export default async function EditPage({
 
   return (
     <Container>
-      <h1 className="text-2xl font-medium text-gray-900 mb-6">Edit post</h1>
+      <h1 className="text-2xl font-medium text-gray-900 mb-6 text-center dark:text-white">
+        Edit post
+      </h1>
       <EditPostForm post={post} />
     </Container>
   );
