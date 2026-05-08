@@ -3,9 +3,6 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { auth } from '@/../auth';
 import Container from '@/components/Container';
-import { Button } from '@/ui/button';
-import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
-import { deletePost } from '@/lib/actions';
 import { notFound } from 'next/navigation';
 import Comments from '@/components/Comments';
 import Likes from '@/components/Likes';
@@ -66,24 +63,6 @@ export default async function Page({
         likesCount={likesCount}
         userLiked={userLiked}
       />
-
-      {session?.user?.id === post.user_id && (
-        <div className="flex items-center justify-end pt-4 border-t border-gray-100 mt-4 gap-2">
-          <Link
-            href={`/posts/${post.id}/edit`}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            Edit post
-            <PencilIcon className="h-4 w-4" />
-          </Link>
-
-          <form action={deletePost.bind(null, post.id)}>
-            <Button className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-              Delete post <TrashIcon className="h-4 w-4" />
-            </Button>
-          </form>
-        </div>
-      )}
 
       <Comments postId={id} comments={comments} isLoggedIn={!!session?.user} />
     </Container>
