@@ -86,7 +86,8 @@ export default function LoginForm() {
               type="submit"
               disabled={isPending}
               size="lg"
-              className="cursor-pointer dark:bg-white dark:text-gray-500"
+              className="cursor-pointer"
+              variant="outline"
               data-icon="inline-end"
             >
               {isPending ? (

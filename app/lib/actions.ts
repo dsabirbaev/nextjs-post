@@ -1,12 +1,13 @@
 'use server';
 import { supabase } from './supabase';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { signIn, signOut } from '@/../auth';
 import bcrypt from 'bcryptjs';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { redirect } from 'next/navigation';
 import { auth } from '@/../auth';
 import { unstable_update } from '@/../auth';
+import { ProfileUpdates } from './definitions';
 
 // Создать пост
 export async function createPost(
@@ -197,7 +198,7 @@ export async function updateProfile(
   if (!name) return 'Name is required';
 
   // ✅ Только непустые поля
-  const updates: Record<string, any> = { name };
+  const updates: ProfileUpdates = { name };
   if (phone) updates.phone = phone;
   if (country) updates.country = country;
   if (address) updates.address = address;

@@ -74,12 +74,13 @@ export default function EditPostForm({ post }: { post: Post }) {
               <Button
                 size="lg"
                 disabled={isPending}
-                className="hover:bg-gray-700 disabled:opacity-50 transition-colors cursor-pointer dark:hover:bg-white"
+                variant="outline"
+                className="cursor-pointer"
               >
                 {isPending ? (
                   <>
                     <Spinner />
-                    Saving...
+                    Updating...
                   </>
                 ) : (
                   <>

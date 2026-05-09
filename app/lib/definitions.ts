@@ -30,3 +30,10 @@ export type Like = {
   created_at: string;
   type: string;
 };
+
+export type ProfileUpdates = {
+  name: string;
+  phone?: string;
+  country?: string;
+  address?: string;
+};

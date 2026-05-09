@@ -31,7 +31,7 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <form action={formAction}>
-      <FieldSet className="w-full p-5">
+      <FieldSet className="w-full p-5 dark:bg-gray-900">
         <FieldGroup>
           <h3 className={`${lusitana.className} mb-3 text-2xl text-center`}>
             Register Account
@@ -98,6 +98,7 @@ export default function RegisterForm() {
               disabled={isPending}
               size="lg"
               className="cursor-pointer"
+              variant="outline"
             >
               {isPending ? (
                 <>

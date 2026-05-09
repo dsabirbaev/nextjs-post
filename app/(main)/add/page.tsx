@@ -2,7 +2,6 @@
 import { useActionState } from 'react';
 import Link from 'next/link';
 import { createPost } from '@/lib/actions';
-import { MoveRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
@@ -65,18 +64,16 @@ export default function CreatePostPage() {
             <div className="flex items-center justify-end">
               <Button
                 size="lg"
-                className="hover:bg-gray-700 disabled:opacity-50 transition-colors cursor-pointer dark:hover:bg-gray-500 "
+                variant="outline"
                 disabled={isPending}
+                className="cursor-pointer"
               >
                 {isPending ? (
                   <>
                     <Spinner className="size-4" /> <span>Please wait</span>
                   </>
                 ) : (
-                  <>
-                    <span>Publish</span>
-                    <MoveRight className="ml-auto" />
-                  </>
+                  <>Publish</>
                 )}
               </Button>
             </div>
