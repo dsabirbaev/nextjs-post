@@ -2,7 +2,7 @@ import '@/ui/globals.css';
 import { inter } from './ui/fonts';
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/components/ThemeProvider';
-
+import { Toaster } from '@/components/ui/sonner';
 export const metadata: Metadata = {
   title: {
     template: '%s | Blog News',
@@ -25,6 +25,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Toaster />
           {children}
         </ThemeProvider>
       </body>

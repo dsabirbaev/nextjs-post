@@ -1,11 +1,12 @@
 'use server';
 import { supabase } from './supabase';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { signIn, signOut } from '@/../auth';
 import bcrypt from 'bcryptjs';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { redirect } from 'next/navigation';
 import { auth } from '@/../auth';
+import { unstable_update } from '@/../auth';
 
 // Создать пост
 export async function createPost(
@@ -181,6 +182,49 @@ export async function changePassword(
   }
 }
 
+export async function updateProfile(
+  prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
+  const session = await auth();
+  if (!session?.user) redirect('/login');
+
+  const name = formData.get('name') as string;
+  const phone = formData.get('phone') as string;
+  const country = formData.get('country') as string;
+  const address = formData.get('address') as string;
+
+  if (!name) return 'Name is required';
+
+  // ✅ Только непустые поля
+  const updates: Record<string, any> = { name };
+  if (phone) updates.phone = phone;
+  if (country) updates.country = country;
+  if (address) updates.address = address;
+
+  const { error } = await supabase
+    .from('users')
+    .update(updates)
+    .eq('id', session.user.id);
+
+  if (error) {
+    console.error('DB Error:', error);
+    return 'Failed to update';
+  }
+
+  await unstable_update({
+    user: {
+      name,
+      country,
+      phone,
+      address,
+    },
+  });
+
+  // ✅ Убей сессию и перезагрузи
+  revalidatePath('/profile');
+  return 'success';
+}
 /// Комментарии post
 
 export async function createComment(

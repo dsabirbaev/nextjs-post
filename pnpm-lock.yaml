@@ -25,6 +25,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      country-list:
+        specifier: ^2.4.1
+        version: 2.4.1
       lucide-react:
         specifier: ^1.14.0
         version: 1.14.0(react@19.2.4)
@@ -2882,6 +2885,12 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  country-list@2.4.1:
+    resolution:
+      {
+        integrity: sha512-KhVV/UfUV3dSNpsWIqHTQxLpYDKPKz1UwkRjadt+YbX2PRhyCEihEoS5XgB7J7AMXpkicvl+tRHvkNI5wbji/g==,
+      }
 
   cross-spawn@7.0.6:
     resolution:
@@ -8076,6 +8085,8 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.9.3
+
+  country-list@2.4.1: {}
 
   cross-spawn@7.0.6:
     dependencies:

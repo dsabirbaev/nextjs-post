@@ -3,7 +3,7 @@ import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/lib/supabase';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -27,6 +27,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id,
           name: user.name,
           email: user.email,
+          country: user.country || '',
+          phone: user.phone || '',
+          address: user.address || '',
         };
       },
     }),
@@ -38,12 +41,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: 'jwt',
   },
   callbacks: {
-    jwt({ token, user }) {
-      if (user) token.id = user.id;
+    jwt({ token, user, trigger, session }) {
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.country = user.country;
+        token.phone = user.phone;
+        token.address = user.address;
+      }
+      if (trigger === 'update' && session?.user) {
+        token.name = session.user.name;
+        token.country = session.user.country;
+        token.phone = session.user.phone;
+        token.address = session.user.address;
+      }
       return token;
     },
     session({ session, token }) {
-      if (token) session.user.id = token.id as string;
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.country = (token.country as string) || '';
+        session.user.phone = (token.phone as string) || '';
+        session.user.address = (token.address as string) || '';
+      }
       return session;
     },
   },

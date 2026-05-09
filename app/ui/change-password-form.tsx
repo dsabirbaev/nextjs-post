@@ -22,8 +22,8 @@ export default function ChangePasswordForm() {
   const [showPasswordOld, setShowPasswordOld] = useState(false);
   const [showPasswordNew, setShowPasswordNew] = useState(false);
   return (
-    <form action={formAction} className="space-y-3">
-      <FieldSet className="w-full p-5">
+    <form action={formAction}>
+      <FieldSet className="w-full">
         <FieldGroup>
           <h2 className="text-lg text-gray-500 mb-5 text-center">
             Change your password

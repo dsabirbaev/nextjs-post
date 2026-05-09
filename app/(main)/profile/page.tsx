@@ -1,41 +1,41 @@
 import type { Metadata } from 'next';
 import Container from '@/components/Container';
-import { auth } from '@/../auth';
 import { Suspense } from 'react';
 import UserPosts from '@/components/UserPosts';
 import { TablesSkeleton } from '@/ui/skeletons';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ShieldUser, LibraryBig } from 'lucide-react';
+import ProfileForm from '@/components/ProfileForm';
 
 export const metadata: Metadata = {
   title: 'Profile',
 };
 
 export default async function Page() {
-  const session = await auth();
   return (
     <Container>
-      <div className="text-center mb-8 mt-4">
-        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
-          <span className="text-2xl font-medium text-gray-600">
-            {session?.user?.name?.[0]?.toUpperCase()}
-          </span>
-        </div>
-        <h1 className="text-2xl font-medium text-gray-900 dark:text-white">
-          {session?.user?.name ?? 'Guest'}
-        </h1>
-        <p className="text-sm text-gray-500 mt-1">{session?.user?.email}</p>
-      </div>
-
-      <div>
+      <Tabs defaultValue="user-info" className="mb-4">
         <div className="flex items-center justify-center mb-4">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-            My Posts
-          </h2>
+          <TabsList>
+            <TabsTrigger value="user-info">
+              <ShieldUser />
+              User Info
+            </TabsTrigger>
+            <TabsTrigger value="posts">
+              <LibraryBig />
+              My Posts
+            </TabsTrigger>
+          </TabsList>
         </div>
-
-        <Suspense fallback={<TablesSkeleton />}>
-          <UserPosts />
-        </Suspense>
-      </div>
+        <TabsContent value="user-info">
+          <ProfileForm />
+        </TabsContent>
+        <TabsContent value="posts">
+          <Suspense fallback={<TablesSkeleton />}>
+            <UserPosts />
+          </Suspense>
+        </TabsContent>
+      </Tabs>
     </Container>
   );
 }
