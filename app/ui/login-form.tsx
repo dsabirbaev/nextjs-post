@@ -26,7 +26,7 @@ export default function LoginForm() {
     undefined
   );
   const [showPassword, setShowPassword] = useState(false);
-  console.log('errorMessage', errorMessage);
+
   return (
     <form action={formAction}>
       <FieldSet className="w-full p-5 dark:bg-gray-900">

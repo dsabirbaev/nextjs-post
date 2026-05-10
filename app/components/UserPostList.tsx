@@ -1,4 +1,6 @@
 'use client';
+import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { toast } from 'sonner';
 
 type Post = {
   id: string;
@@ -20,9 +23,21 @@ type Post = {
 };
 
 export default function UserPostList({ posts }: { posts: Post[] }) {
+  const searchParams = useSearchParams();
+
   if (!posts.length) {
     return <p className="text-center text-sm text-gray-400 py-10">No Posts</p>;
   }
+
+  useEffect(() => {
+    if (searchParams.get('deleted') === 'true') {
+      toast.success('Post deleted successfully', {
+        position: 'top-center',
+        className: '!bg-green-50 !text-green-700 !border-green-200',
+      });
+    }
+  }, [searchParams]);
+
   return (
     <div className="flex flex-col gap-3">
       <Table>

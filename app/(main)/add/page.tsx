@@ -1,5 +1,8 @@
 'use client';
-import { useActionState } from 'react';
+
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import Link from 'next/link';
 import { createPost } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
@@ -12,7 +15,8 @@ import { Field, FieldSet, FieldGroup } from '@/components/ui/field';
 import Container from '@/components/Container';
 
 export default function CreatePostPage() {
-  const [error, formAction, isPending] = useActionState(createPost, undefined);
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(createPost, undefined);
 
   const today = new Date().toLocaleDateString('en-US', {
     month: 'short',
@@ -20,9 +24,18 @@ export default function CreatePostPage() {
     year: 'numeric',
   });
 
+  useEffect(() => {
+    if (state === 'success') {
+      toast.success('Post published successfully', {
+        position: 'top-center',
+        className: '!bg-green-50 !text-green-700 !border-green-200',
+      });
+      router.push('/');
+    }
+  }, [state, router]);
+
   return (
     <Container>
-      {/* Top bar */}
       <div className="flex items-center justify-between py-3">
         <Link href="/" className="text-sm text-gray-500 hover:text-gray-900">
           ← Back
@@ -33,14 +46,14 @@ export default function CreatePostPage() {
         <FieldSet className="w-full">
           <FieldGroup>
             {/* Error */}
-            <Field className="mb-2">
-              {error && (
+            {state && state !== 'success' && (
+              <Field className="mb-2">
                 <Alert variant="destructive" className="text-xs">
                   <AlertCircleIcon className="size-4" />
-                  <AlertTitle>{error}</AlertTitle>
+                  <AlertTitle>{state}</AlertTitle>
                 </Alert>
-              )}
-            </Field>
+              </Field>
+            )}
 
             {/* Title */}
             <InputGroup>
@@ -48,32 +61,31 @@ export default function CreatePostPage() {
                 name="title"
                 type="text"
                 placeholder="Post title..."
+                required
               />
             </InputGroup>
 
             {/* Meta */}
             <p className="text-xs text-gray-400">myBlog · {today}</p>
 
+            {/* Content */}
             <Textarea
               name="content"
               placeholder="Write your post content here..."
               className="min-h-[300px]"
+              required
             />
 
             {/* Footer */}
-            <div className="flex items-center justify-end">
-              <Button
-                size="lg"
-                variant="outline"
-                disabled={isPending}
-                className="cursor-pointer"
-              >
+            <div className="flex items-center justify-end pt-4">
+              <Button size="lg" disabled={isPending} className="cursor-pointer">
                 {isPending ? (
                   <>
-                    <Spinner className="size-4" /> <span>Please wait</span>
+                    <Spinner className="size-4" />
+                    <span>Publishing...</span>
                   </>
                 ) : (
-                  <>Publish</>
+                  'Publish'
                 )}
               </Button>
             </div>

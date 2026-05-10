@@ -15,6 +15,7 @@ export async function createPost(
   formData: FormData
 ): Promise<string | undefined> {
   const session = await auth();
+  if (!session?.user) redirect('/login');
 
   const title = formData.get('title') as string;
   const content = formData.get('content') as string;
@@ -24,13 +25,16 @@ export async function createPost(
   const { error } = await supabase.from('posts').insert({
     title,
     content,
-    user_id: session?.user?.id, // ✅ только user_id
+    user_id: session.user.id,
   });
 
-  if (error) return 'Something went wrong';
+  if (error) {
+    console.error('DB Error:', error);
+    return 'Something went wrong';
+  }
 
   revalidatePath('/');
-  redirect('/');
+  return 'success'; // ← вернуть вместо redirect
 }
 
 // Обновить пост
@@ -69,8 +73,8 @@ export async function deletePost(id: string): Promise<void> {
     .eq('id', id)
     .eq('user_id', session.user.id); // ✅ только свои посты
 
-  revalidatePath('/');
-  redirect('/');
+  revalidatePath('/profile');
+  redirect('/profile?deleted=true');
 }
 
 // Next Auth функции для регистрации, логина и логаута юзера
