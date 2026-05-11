@@ -242,6 +242,7 @@ export async function updateProfile(
 
 export async function createComment(
   postId: string,
+  replyToId: string | null, // ← ID комментария на который отвечаем
   prevState: string | undefined,
   formData: FormData
 ): Promise<string | undefined> {
@@ -249,17 +250,20 @@ export async function createComment(
   if (!session?.user) redirect('/login');
 
   const content = formData.get('content') as string;
+
   if (!content.trim()) return 'Comment cannot be empty';
 
   const { error } = await supabase.from('comments').insert({
     content,
     post_id: postId,
     user_id: session.user.id,
+    reply_id: replyToId || null, // ✅ null если не reply
   });
 
   if (error) return 'Something went wrong';
 
   revalidatePath(`/posts/${postId}`);
+  return 'success';
 }
 
 /// Лайки постов

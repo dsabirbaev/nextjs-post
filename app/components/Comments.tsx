@@ -1,19 +1,21 @@
 'use client';
-import { useActionState } from 'react';
+
+import { useActionState, useEffect, useState } from 'react';
 import { createComment } from '@/lib/actions';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { Field } from '@/components/ui/field';
+import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
 
 type Comment = {
   id: string;
   content: string;
   user_id: string;
+  post_id: string;
+  reply_id: string | null;
   created_at: string;
-  reply_id: string;
   users: {
     name: string;
   };
@@ -26,96 +28,229 @@ type Props = {
 };
 
 export default function Comments({ postId, comments, isLoggedIn }: Props) {
-  console.log('comments ', comments);
-  const createCommentWithId = createComment.bind(null, postId);
-  const [error, formAction, isPending] = useActionState(
-    createCommentWithId,
-    undefined
-  );
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+
+  // Главные комментарии
+  const mainComments = comments.filter((c) => !c.reply_id);
+
+  // Replies конкретного комментария
+  const getReplies = (commentId: string) =>
+    comments.filter((c) => c.reply_id === commentId);
 
   return (
-    <div className="mt-5 border-t border-gray-100 pt-5">
-      <h2 className="text-base font-medium text-gray-900 mb-6 dark:text-gray-300">
+    <div className="mt-10 border-t border-gray-100 pt-8">
+      <h2 className="text-lg font-medium text-gray-900 mb-6 dark:text-white">
         Comments ({comments.length})
       </h2>
 
-      {/* Список комментариев */}
-      <div className="flex flex-col gap-6 mb-8">
-        {comments.length === 0 && (
+      {/* СПИСОК КОММЕНТАРИЕВ */}
+      <div className="space-y-6 mb-8">
+        {mainComments.length === 0 ? (
           <p className="text-sm text-gray-400">
             No comments yet. Be the first!
           </p>
-        )}
-        {comments.map((comment) => (
-          <div key={comment.id} className="flex gap-2">
-            {/* Аватар */}
-            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-xs font-medium text-gray-600 flex-shrink-0">
-              {comment.users?.name?.[0]?.toUpperCase()}
-            </div>
-            <div>
-              <div className="flex flex-col gap-2 mb-1">
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-400">
-                  {comment.users?.name}
-                </span>
-                <span className="text-xs text-gray-400">
-                  {new Date(comment.created_at).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </span>
+        ) : (
+          mainComments.map((comment) => (
+            <div key={comment.id}>
+              {/* Главный комментарий */}
+              <CommentBlock
+                comment={comment}
+                onReply={() => setReplyingTo(comment.id)}
+                isLoggedIn={isLoggedIn}
+              />
+
+              {/* Replies */}
+              <div className="ml-8 space-y-4 mt-4">
+                {getReplies(comment.id).map((reply) => (
+                  <CommentBlock
+                    key={reply.id}
+                    comment={reply}
+                    isReply
+                    isLoggedIn={isLoggedIn}
+                  />
+                ))}
               </div>
-              <p className="text-sm text-gray-700 dark:text-gray-400">
-                {comment.content}
-              </p>
+
+              {/* Reply форма */}
+              {isLoggedIn && replyingTo === comment.id && (
+                <div className="ml-8 mt-4">
+                  <CommentFormReply
+                    postId={postId}
+                    replyToId={comment.id}
+                    onSuccess={() => setReplyingTo(null)}
+                  />
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
-      {/* Форма */}
+      {/* ФОРМА ДЛЯ ГЛАВНЫХ КОММЕНТАРИЕВ */}
       {isLoggedIn ? (
-        <form action={formAction} className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2 items-end">
-            <Textarea
-              name="content"
-              placeholder="Type your message here."
-              className="min-h-[120px]"
-            />
-            <Button
-              disabled={isPending}
-              size="lg"
-              className="cursor-pointer"
-              variant="outline"
-            >
-              {isPending ? (
-                <>
-                  <Spinner />
-                </>
-              ) : (
-                'Send'
-              )}
-            </Button>
-          </div>
-          <Field>
-            {error && (
-              <Alert variant="destructive" className="text-xs">
-                <AlertCircleIcon className="size-4" />
-                <AlertTitle>{error}</AlertTitle>
-              </Alert>
-            )}
-          </Field>
-        </form>
+        <CommentFormMain postId={postId} />
       ) : (
-        <div className="">
-          <Textarea
-            name="content"
-            placeholder="Sign In to leave a comment"
-            disabled
-          />
-        </div>
+        <Textarea disabled placeholder="Sign in to leave a comment" />
       )}
     </div>
+  );
+}
+
+// Блок комментария
+function CommentBlock({
+  comment,
+  isReply = false,
+  onReply,
+  isLoggedIn,
+}: {
+  comment: Comment;
+  isReply?: boolean;
+  onReply?: () => void;
+  isLoggedIn?: boolean;
+}) {
+  return (
+    <div className="flex gap-3">
+      {/* Аватар */}
+      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold flex-shrink-0">
+        {comment.users?.name?.[0]?.toUpperCase()}
+      </div>
+
+      {/* Содержимое */}
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-900 dark:text-white">
+              {comment.users?.name}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {new Date(comment.created_at).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </p>
+          </div>
+          {isLoggedIn && onReply && !isReply && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onReply}
+              className="text-xs"
+            >
+              Reply
+            </Button>
+          )}
+        </div>
+        <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">
+          {comment.content}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Форма для главных комментариев
+function CommentFormMain({ postId }: { postId: string }) {
+  const createMainComment = createComment.bind(null, postId, null);
+  const [state, formAction, isPending] = useActionState(
+    createMainComment,
+    undefined
+  );
+
+  useEffect(() => {
+    if (state === 'success') {
+      toast.success('Comment responded', {
+        position: 'top-center',
+        className: '!bg-green-50 !text-green-700 !border-green-200',
+      });
+    }
+  }, [state]);
+
+  return (
+    <form action={formAction} className="space-y-3">
+      <Textarea
+        name="content"
+        placeholder="Write a comment..."
+        className="min-h-[120px]"
+        required
+      />
+
+      {state && state !== 'success' && (
+        <Alert variant="destructive">
+          <AlertCircleIcon className="size-4" />
+          <AlertTitle>{state}</AlertTitle>
+        </Alert>
+      )}
+
+      <div className="flex justify-end">
+        <Button disabled={isPending} type="submit">
+          {isPending ? (
+            <>
+              <Spinner />
+            </>
+          ) : (
+            'Respond'
+          )}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+// Форма для reply
+function CommentFormReply({
+  postId,
+  replyToId,
+  onSuccess,
+}: {
+  postId: string;
+  replyToId: string;
+  onSuccess: () => void;
+}) {
+  const createReply = createComment.bind(null, postId, replyToId);
+  const [state, formAction, isPending] = useActionState(createReply, undefined);
+
+  useEffect(() => {
+    if (state === 'success') {
+      toast.success('Peply responded', {
+        position: 'top-center',
+        className: '!bg-green-50 !text-green-700 !border-green-200',
+      });
+      onSuccess();
+    }
+  }, [state, onSuccess]);
+
+  return (
+    <form action={formAction} className="space-y-3">
+      <Textarea
+        name="content"
+        placeholder="Write a reply..."
+        className="min-h-[100px]"
+        required
+      />
+
+      {state && state !== 'success' && (
+        <Alert variant="destructive">
+          <AlertCircleIcon className="size-4" />
+          <AlertTitle>{state}</AlertTitle>
+        </Alert>
+      )}
+
+      <div className="flex gap-2 justify-end">
+        <Button type="button" variant="ghost" onClick={onSuccess}>
+          Cancel
+        </Button>
+        <Button disabled={isPending} type="submit">
+          {isPending ? (
+            <>
+              <Spinner />
+            </>
+          ) : (
+            'Respond'
+          )}
+        </Button>
+      </div>
+    </form>
   );
 }
