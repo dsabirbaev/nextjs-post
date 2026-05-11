@@ -58,7 +58,7 @@ export default function UserPostList({ posts }: { posts: Post[] }) {
                   <Button
                     asChild
                     className="cursor-pointer bg-green-500"
-                    size="lg"
+                    size="sm"
                     variant="outline"
                   >
                     <Link
@@ -74,7 +74,7 @@ export default function UserPostList({ posts }: { posts: Post[] }) {
                     <input type="hidden" name="postId" value={post.id} />
                     <Button
                       variant="destructive"
-                      size="lg"
+                      size="sm"
                       disabled={isPending}
                       type="submit"
                       className="cursor-pointer"

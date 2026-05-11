@@ -35,7 +35,7 @@ export default function Comments({ postId, comments, isLoggedIn }: Props) {
 
   return (
     <div className="mt-5 border-t border-gray-100 pt-5">
-      <h2 className="text-base font-medium text-gray-900 mb-6">
+      <h2 className="text-base font-medium text-gray-900 mb-6 dark:text-gray-300">
         Comments ({comments.length})
       </h2>
 
@@ -54,7 +54,7 @@ export default function Comments({ postId, comments, isLoggedIn }: Props) {
             </div>
             <div>
               <div className="flex flex-col gap-2 mb-1">
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-400">
                   {comment.users?.name}
                 </span>
                 <span className="text-xs text-gray-400">
@@ -66,7 +66,9 @@ export default function Comments({ postId, comments, isLoggedIn }: Props) {
                   })}
                 </span>
               </div>
-              <p className="text-sm text-gray-700">{comment.content}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">
+                {comment.content}
+              </p>
             </div>
           </div>
         ))}
@@ -84,11 +86,12 @@ export default function Comments({ postId, comments, isLoggedIn }: Props) {
             <Button
               disabled={isPending}
               size="lg"
-              className="bg-gray-900 text-white hover:bg-gray-700 disabled:opacity-50 cursor-pointer w-50"
+              className="cursor-pointer"
+              variant="outline"
             >
               {isPending ? (
                 <>
-                  <Spinner className="size-4" />
+                  <Spinner />
                 </>
               ) : (
                 'Send'

@@ -38,7 +38,7 @@ export default function EditPostForm({ post }: { post: Post }) {
     } else if (state) {
       toast.error(state);
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <form action={formAction}>

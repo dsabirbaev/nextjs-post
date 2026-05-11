@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useActionState } from 'react';
 import { changePassword } from '@/lib/actions';
 import { FieldSet, FieldGroup, Field, FieldLabel } from '@/components/ui/field';
@@ -13,14 +13,29 @@ import {
   InputGroupInput,
 } from '@/components/ui/input-group';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function ChangePasswordForm() {
-  const [errorMessage, formAction, isPending] = useActionState(
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(
     changePassword,
     undefined
   );
   const [showPasswordOld, setShowPasswordOld] = useState(false);
   const [showPasswordNew, setShowPasswordNew] = useState(false);
+
+  useEffect(() => {
+    if (state === 'success') {
+      toast.success('Profile updated successfully', {
+        position: 'top-center',
+        className: '!bg-green-50 !text-green-700 !border-green-200',
+      });
+
+      router.push('/profile');
+    }
+  }, [state, router]);
+
   return (
     <form action={formAction}>
       <FieldSet className="w-full">
@@ -105,7 +120,7 @@ export default function ChangePasswordForm() {
             >
               {isPending ? (
                 <>
-                  <Spinner className="size-4" /> <span>Please wait</span>
+                  <span>Please wait</span> <Spinner className="size-4" />
                 </>
               ) : (
                 'Change Password'
@@ -113,14 +128,14 @@ export default function ChangePasswordForm() {
             </Button>
           </Field>
 
-          <Field>
-            {errorMessage && (
+          {state && state !== 'success' && (
+            <Field>
               <Alert variant="destructive">
                 <AlertCircleIcon className="size-4" />
-                <AlertTitle>{errorMessage}</AlertTitle>
+                <AlertTitle>{state}</AlertTitle>
               </Alert>
-            )}
-          </Field>
+            </Field>
+          )}
         </FieldGroup>
       </FieldSet>
     </form>

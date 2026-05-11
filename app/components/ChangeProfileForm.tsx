@@ -44,7 +44,7 @@ export default function ChangeProfileForm({ user }: Props) {
         className: '!bg-green-50 !text-green-700 !border-green-200',
       });
 
-      router.refresh();
+      router.push('/profile');
     }
   }, [state, router]);
 

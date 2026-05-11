@@ -182,16 +182,17 @@ export async function changePassword(
 
   if (error) return 'Something went wrong';
 
-  // ✅ логиним с новым паролем
-  try {
-    await signIn('credentials', {
-      email: session.user.email,
-      password: newPassword,
-      redirectTo: '/',
-    });
-  } catch (error) {
-    throw error;
-  }
+  // // ✅ логиним с новым паролем
+  // try {
+  //   await signIn('credentials', {
+  //     email: session.user.email,
+  //     password: newPassword,
+  //     redirectTo: '/',
+  //   });
+  // } catch (error) {
+  //   throw error;
+  // }
+  return 'success';
 }
 
 export async function updateProfile(
