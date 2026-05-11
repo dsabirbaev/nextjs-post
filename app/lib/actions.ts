@@ -58,23 +58,30 @@ export async function updatePost(
     .eq('user_id', session.user.id);
 
   if (error) return 'Something went wrong';
-  revalidatePath('/posts');
-  redirect(`/posts`);
+  revalidatePath('/profile');
+  return 'success'; // ← вернуть вместо redirect
 }
 
 // Удалить пост
-export async function deletePost(id: string): Promise<void> {
+export async function deletePost(
+  prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
   const session = await auth();
   if (!session?.user) redirect('/login');
 
-  await supabase
+  const id = formData.get('postId') as string; // ← получи id из formData
+
+  const { error } = await supabase
     .from('posts')
     .delete()
     .eq('id', id)
-    .eq('user_id', session.user.id); // ✅ только свои посты
+    .eq('user_id', session.user.id);
+
+  if (error) return 'Failed to delete post';
 
   revalidatePath('/profile');
-  redirect('/profile?deleted=true');
+  return 'success'; // ← вернуть вместо redirect
 }
 
 // Next Auth функции для регистрации, логина и логаута юзера

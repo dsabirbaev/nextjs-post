@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { updatePost } from '@/lib/actions';
 import Link from 'next/link';
 import { ArrowLeft, RotateCw } from 'lucide-react';
@@ -11,6 +11,8 @@ import { InputGroup, InputGroupInput } from '@/components/ui/input-group';
 import { FieldSet, FieldGroup, Field, FieldLabel } from '@/components/ui/field';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 type Post = {
   id: string;
@@ -19,11 +21,24 @@ type Post = {
 };
 
 export default function EditPostForm({ post }: { post: Post }) {
+  const router = useRouter();
   const updatePostWithId = updatePost.bind(null, post.id);
-  const [error, formAction, isPending] = useActionState(
+  const [state, formAction, isPending] = useActionState(
     updatePostWithId,
     undefined
   );
+
+  useEffect(() => {
+    if (state === 'success') {
+      toast.success('Post edited successfully', {
+        position: 'top-center',
+        className: '!bg-green-50 !text-green-700 !border-green-200',
+      });
+      router.push('/profile');
+    } else if (state) {
+      toast.error(state);
+    }
+  }, [state]);
 
   return (
     <form action={formAction}>
@@ -36,14 +51,14 @@ export default function EditPostForm({ post }: { post: Post }) {
             <ArrowLeft className="h-4 w-4" /> Back
           </Link>
 
-          <Field>
-            {error && (
+          {state && state !== 'success' && (
+            <Field>
               <Alert variant="destructive" className="text-xs">
                 <AlertCircleIcon className="size-4" />
-                <AlertTitle>{error}</AlertTitle>
+                <AlertTitle>{state}</AlertTitle>
               </Alert>
-            )}
-          </Field>
+            </Field>
+          )}
 
           <Field>
             <FieldLabel htmlFor="title">Title</FieldLabel>
@@ -79,13 +94,13 @@ export default function EditPostForm({ post }: { post: Post }) {
               >
                 {isPending ? (
                   <>
+                    <span>Updating</span>
                     <Spinner />
-                    Updating...
                   </>
                 ) : (
                   <>
-                    Update
-                    <RotateCw className="h-4 w-4" />
+                    <span>Update</span>
+                    <RotateCw />
                   </>
                 )}
               </Button>

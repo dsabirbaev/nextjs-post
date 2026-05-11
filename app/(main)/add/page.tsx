@@ -78,11 +78,16 @@ export default function CreatePostPage() {
 
             {/* Footer */}
             <div className="flex items-center justify-end pt-4">
-              <Button size="lg" disabled={isPending} className="cursor-pointer">
+              <Button
+                size="lg"
+                disabled={isPending}
+                className="cursor-pointer"
+                variant="outline"
+              >
                 {isPending ? (
                   <>
-                    <Spinner className="size-4" />
-                    <span>Publishing...</span>
+                    <span>Publishing</span>
+                    <Spinner />
                   </>
                 ) : (
                   'Publish'

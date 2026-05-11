@@ -1,6 +1,5 @@
 'use client';
-import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useActionState } from 'react';
 import Link from 'next/link';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { toast } from 'sonner';
+import { Spinner } from './ui/spinner';
 
 type Post = {
   id: string;
@@ -23,20 +23,22 @@ type Post = {
 };
 
 export default function UserPostList({ posts }: { posts: Post[] }) {
-  const searchParams = useSearchParams();
-
-  if (!posts.length) {
-    return <p className="text-center text-sm text-gray-400 py-10">No Posts</p>;
-  }
+  const [state, formAction, isPending] = useActionState(deletePost, undefined);
 
   useEffect(() => {
-    if (searchParams.get('deleted') === 'true') {
+    if (state === 'success') {
       toast.success('Post deleted successfully', {
         position: 'top-center',
         className: '!bg-green-50 !text-green-700 !border-green-200',
       });
+    } else if (state) {
+      toast.error(state);
     }
-  }, [searchParams]);
+  }, [state]);
+
+  if (!posts.length) {
+    return <p className="text-center text-sm text-gray-400 py-10">No Posts</p>;
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -68,13 +70,24 @@ export default function UserPostList({ posts }: { posts: Post[] }) {
                     </Link>
                   </Button>
 
-                  <form action={deletePost.bind(null, post.id)}>
+                  <form action={formAction} style={{ display: 'inline' }}>
+                    <input type="hidden" name="postId" value={post.id} />
                     <Button
-                      className="cursor-pointer"
-                      size="lg"
                       variant="destructive"
+                      size="lg"
+                      disabled={isPending}
+                      type="submit"
+                      className="cursor-pointer"
                     >
-                      Delete <Trash2 />
+                      {isPending ? (
+                        <>
+                          <span>Deleting</span> <Spinner className="size-4" />
+                        </>
+                      ) : (
+                        <>
+                          <span>Delete</span> <Trash2 className="size-4" />
+                        </>
+                      )}
                     </Button>
                   </form>
                 </div>
