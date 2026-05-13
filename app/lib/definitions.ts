@@ -13,6 +13,7 @@ export type User = {
   email: string;
   password: string;
   created_at: string;
+  avatar_url: string;
 };
 
 export type Comment = {

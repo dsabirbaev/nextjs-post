@@ -7,13 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon, Upload } from 'lucide-react';
-
+import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
 type Props = {
   currentAvatar?: string;
   userName?: string;
 };
 
 export default function AvatarUpload({ currentAvatar, userName }: Props) {
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [state, formAction, isPending] = useActionState(
@@ -23,8 +25,12 @@ export default function AvatarUpload({ currentAvatar, userName }: Props) {
 
   useEffect(() => {
     if (state === 'success') {
-      toast.success('Avatar updated successfully');
+      toast.success('Avatar updated successfully', {
+        position: 'top-center',
+        className: '!bg-green-50 !text-green-700 !border-green-200',
+      });
       setPreview(null);
+      router.refresh();
     }
   }, [state]);
 
@@ -76,7 +82,7 @@ export default function AvatarUpload({ currentAvatar, userName }: Props) {
               Choose Photo
             </Button>
           </label>
-          <input
+          <Input
             ref={inputRef}
             id="avatar-input"
             type="file"
@@ -99,14 +105,14 @@ export default function AvatarUpload({ currentAvatar, userName }: Props) {
 
       {/* Submit */}
       {preview && (
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button disabled={isPending} className="w-full cursor-pointer">
           {isPending ? (
             <>
-              <Spinner className="size-4" />
-              Uploading...
+              <span>Uploading</span>
+              <Spinner />
             </>
           ) : (
-            'Save Avatar'
+            <span>Save avatar</span>
           )}
         </Button>
       )}

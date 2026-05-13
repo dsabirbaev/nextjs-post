@@ -30,7 +30,6 @@ export default async function Page() {
         </div>
         <TabsContent value="profile">
           <div className="mb-6">
-            <h3 className="text-sm font-medium mb-4">Profile Photo</h3>
             <AvatarUpload
               currentAvatar={session?.user?.avatar_url}
               userName={session?.user?.name}

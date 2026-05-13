@@ -10,7 +10,7 @@ export default async function ProfileForm() {
       <FieldGroup>
         <Field className="flex flex-row gap-x-4 items-center">
           <Avatar size="lg">
-            <AvatarImage src={session.user.avatar_url} alt="avatar" />
+            <AvatarImage src={session?.user?.avatar_url} alt="avatar" />
             <AvatarFallback>
               {session?.user?.name?.[0]?.toUpperCase()}
             </AvatarFallback>

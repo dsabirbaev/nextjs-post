@@ -75,3 +75,29 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
     },
   },
 });
+
+declare module 'next-auth' {
+  interface User {
+    id: string;
+    name: string;
+    email: string;
+    country?: string;
+    phone?: string;
+    address?: string;
+    avatar_url?: string;
+  }
+
+  interface Session {
+    user: User;
+  }
+
+  interface JWT {
+    id?: string;
+    name?: string;
+    email?: string;
+    country?: string;
+    phone?: string;
+    address?: string;
+    avatar_url?: string;
+  }
+}
