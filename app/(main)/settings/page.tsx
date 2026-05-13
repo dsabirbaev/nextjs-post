@@ -5,6 +5,8 @@ import ChangeProfileForm from '@/components/ChangeProfileForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserRoundCog, UserRoundKey } from 'lucide-react';
 import { auth } from '@/../auth';
+import AvatarUpload from '@/components/AvatarUpload';
+
 export const metadata: Metadata = {
   title: 'Settings',
 };
@@ -27,6 +29,13 @@ export default async function Page() {
           </TabsList>
         </div>
         <TabsContent value="profile">
+          <div className="mb-6">
+            <h3 className="text-sm font-medium mb-4">Profile Photo</h3>
+            <AvatarUpload
+              currentAvatar={session?.user?.avatar_url}
+              userName={session?.user?.name}
+            />
+          </div>
           <ChangeProfileForm user={session?.user ?? {}} />
         </TabsContent>
         <TabsContent value="security">

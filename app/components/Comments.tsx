@@ -133,16 +133,16 @@ function CommentBlock({
           </div>
           {isLoggedIn && onReply && !isReply && (
             <Button
-              variant="ghost"
-              size="sm"
+              variant="outline"
+              size="xs"
               onClick={onReply}
-              className="text-xs"
+              className="cursor-pointer"
             >
               Reply
             </Button>
           )}
         </div>
-        <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">
+        <p className="text-sm text-gray-700 dark:text-gray-300">
           {comment.content}
         </p>
       </div>
@@ -184,7 +184,11 @@ function CommentFormMain({ postId }: { postId: string }) {
       )}
 
       <div className="flex justify-end">
-        <Button disabled={isPending} type="submit">
+        <Button
+          disabled={isPending}
+          variant="outline"
+          className="cursor-pointer"
+        >
           {isPending ? (
             <>
               <Spinner />
@@ -213,7 +217,7 @@ function CommentFormReply({
 
   useEffect(() => {
     if (state === 'success') {
-      toast.success('Peply responded', {
+      toast.success('Reply responded', {
         position: 'top-center',
         className: '!bg-green-50 !text-green-700 !border-green-200',
       });
@@ -238,10 +242,18 @@ function CommentFormReply({
       )}
 
       <div className="flex gap-2 justify-end">
-        <Button type="button" variant="ghost" onClick={onSuccess}>
+        <Button
+          variant="destructive"
+          className="cursor-pointer"
+          onClick={onSuccess}
+        >
           Cancel
         </Button>
-        <Button disabled={isPending} type="submit">
+        <Button
+          disabled={isPending}
+          variant="outline"
+          className="cursor-pointer"
+        >
           {isPending ? (
             <>
               <Spinner />

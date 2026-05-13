@@ -127,7 +127,7 @@ export async function register(
 export async function login(prevState: string | undefined, formData: FormData) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
-  console.log('login action', email, password);
+
   try {
     await signIn('credentials', {
       email,
@@ -237,6 +237,57 @@ export async function updateProfile(
   // ✅ Убей сессию и перезагрузи
   revalidatePath('/profile');
   return 'success';
+}
+
+export async function uploadAvatar(
+  prevState: string | undefined,
+  formData: FormData
+): Promise<string | undefined> {
+  const session = await auth();
+  if (!session?.user) redirect('/login');
+
+  const file = formData.get('avatar') as File;
+  if (!file) return 'No file selected';
+
+  // Валидация
+  if (file.size > 5 * 1024 * 1024) return 'File too large (max 5MB)';
+  if (!file.type.startsWith('image/')) return 'Only images allowed';
+
+  try {
+    // 1️⃣ Загрузи в Supabase Storage
+    const fileName = `${session.user.id}_${Date.now()}.jpg`;
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(fileName, file, { upsert: true });
+
+    if (uploadError) return 'Upload failed';
+
+    // 2️⃣ Получи публичный URL
+    const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+
+    const avatarUrl = data.publicUrl;
+
+    // 3️⃣ Сохрани URL в БД
+    const { error: dbError } = await supabase
+      .from('users')
+      .update({ avatar_url: avatarUrl })
+      .eq('id', session.user.id);
+
+    if (dbError) return 'Failed to save avatar';
+
+    // 4️⃣ Обнови сессию
+    await unstable_update({
+      user: {
+        avatar_url: avatarUrl,
+      },
+    });
+
+    revalidatePath('/settings');
+    return 'success';
+  } catch (error) {
+    console.error('Avatar upload error:', error);
+    return 'Something went wrong';
+  }
 }
 /// Комментарии post
 

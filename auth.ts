@@ -30,6 +30,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
           country: user.country || '',
           phone: user.phone || '',
           address: user.address || '',
+          avatar_url: user.avatar_url || '',
         };
       },
     }),
@@ -49,12 +50,14 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         token.country = user.country;
         token.phone = user.phone;
         token.address = user.address;
+        token.avatar_url = user.avatar_url;
       }
       if (trigger === 'update' && session?.user) {
         token.name = session.user.name;
         token.country = session.user.country;
         token.phone = session.user.phone;
         token.address = session.user.address;
+        token.avatar_url = session.user.avatar_url;
       }
       return token;
     },
@@ -66,6 +69,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         session.user.country = (token.country as string) || '';
         session.user.phone = (token.phone as string) || '';
         session.user.address = (token.address as string) || '';
+        session.user.avatar_url = (token.avatar_url as string) || '';
       }
       return session;
     },
