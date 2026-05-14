@@ -29,10 +29,10 @@ export default function AvatarUpload({ currentAvatar, userName }: Props) {
         position: 'top-center',
         className: '!bg-green-50 !text-green-700 !border-green-200',
       });
-      setPreview(null);
+      // setPreview(null);
       router.refresh();
     }
-  }, [state]);
+  }, [state, router]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

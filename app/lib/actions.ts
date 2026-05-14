@@ -249,25 +249,23 @@ export async function uploadAvatar(
   const file = formData.get('avatar') as File;
   if (!file) return 'No file selected';
 
-  // Валидация
   if (file.size > 5 * 1024 * 1024) return 'File too large (max 5MB)';
   if (!file.type.startsWith('image/')) return 'Only images allowed';
 
   try {
-    // 1️⃣ Загрузи в Supabase Storage
-    const fileName = `${session.user.id}_${Date.now()}.jpg`;
+    // ✅ Одно и то же имя для одного юзера
+    const fileName = `${session.user.id}/avatar.jpg`;
+
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(fileName, file, { upsert: true });
 
     if (uploadError) return 'Upload failed';
 
-    // 2️⃣ Получи публичный URL
+    // ✅ Cache busting
     const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+    const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
 
-    const avatarUrl = data.publicUrl;
-
-    // 3️⃣ Сохрани URL в БД
     const { error: dbError } = await supabase
       .from('users')
       .update({ avatar_url: avatarUrl })
@@ -275,9 +273,15 @@ export async function uploadAvatar(
 
     if (dbError) return 'Failed to save avatar';
 
-    // 4️⃣ Обнови сессию
+    // ✅ Обнови сессию со всеми полями
     await unstable_update({
       user: {
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        country: session.user.country,
+        phone: session.user.phone,
+        address: session.user.address,
         avatar_url: avatarUrl,
       },
     });
