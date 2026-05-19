@@ -19,22 +19,54 @@ export async function createPost(
 
   const title = formData.get('title') as string;
   const content = formData.get('content') as string;
+  const image = formData.get('image') as File;
 
   if (!title || !content) return 'Title and content are required';
 
-  const { error } = await supabase.from('posts').insert({
-    title,
-    content,
-    user_id: session.user.id,
-  });
-
-  if (error) {
-    console.error('DB Error:', error);
-    return 'Something went wrong';
+  // Валидация картинки
+  if (image && image.size > 0) {
+    if (image.size > 5 * 1024 * 1024) return 'Image too large (max 5MB)';
+    if (!image.type.startsWith('image/')) return 'Only images allowed';
   }
 
-  revalidatePath('/');
-  return 'success'; // ← вернуть вместо redirect
+  let imageUrl: string | null = null;
+
+  try {
+    // Загрузи картинку если есть
+    if (image && image.size > 0) {
+      const fileName = `${session.user.id}_${Date.now()}.jpg`;
+      const { error: uploadError } = await supabase.storage
+        .from('post-images')
+        .upload(fileName, image);
+
+      if (uploadError) return 'Image upload failed';
+
+      const { data } = supabase.storage
+        .from('post-images')
+        .getPublicUrl(fileName);
+
+      imageUrl = data.publicUrl;
+    }
+
+    // Создай пост
+    const { error } = await supabase.from('posts').insert({
+      title,
+      content,
+      image_url: imageUrl,
+      user_id: session.user.id,
+    });
+
+    if (error) {
+      console.error('DB Error:', error);
+      return 'Something went wrong';
+    }
+
+    revalidatePath('/');
+    return 'success';
+  } catch (error) {
+    console.error('Create post error:', error);
+    return 'Something went wrong';
+  }
 }
 
 // Обновить пост
