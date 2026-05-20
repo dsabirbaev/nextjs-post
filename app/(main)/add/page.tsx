@@ -96,28 +96,30 @@ export default function CreatePostPage() {
                       height={200}
                       className="w-full h-48 object-cover rounded-lg"
                     />
-                    <button
-                      type="button"
+                    <Button
+                      variant="outline"
                       onClick={() => {
                         setPreview(null);
                         if (inputRef.current) inputRef.current.value = '';
                       }}
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded"
+                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded cursor-pointer"
                     >
-                      <X className="w-4 h-4" />
-                    </button>
+                      <X />
+                    </Button>
                   </div>
                 ) : (
-                  <button
-                    type="button"
+                  <Button
+                    variant="outline"
                     onClick={() => inputRef.current?.click()}
-                    className="w-full text-center py-6"
+                    className="cursor-pointer h-25 w-full"
                   >
-                    <Upload className="w-6 h-6 mx-auto text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600">
-                      Click to upload image (JPG, PNG)
-                    </p>
-                  </button>
+                    <div className="flex gap-2">
+                      <Upload className="w-6 h-6 mx-auto text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-600 ">
+                        Click to upload image (JPG, PNG)
+                      </p>
+                    </div>
+                  </Button>
                 )}
                 <input
                   ref={inputRef}

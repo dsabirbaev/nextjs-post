@@ -38,7 +38,7 @@ export default async function Page({
     <Container>
       <Link
         href="/"
-        className="text-sm text-gray-500 hover:text-gray-900 mb-8 flex gap-1"
+        className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white mb-8 flex gap-1"
       >
         <MoveLeft className="w-4 h-4" /> Back
       </Link>

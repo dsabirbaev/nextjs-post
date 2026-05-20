@@ -1,6 +1,6 @@
 // lib/data.ts
 import { supabase } from './supabase';
-import { Post, Comment } from './definitions';
+import { Post, Comment, User, PostById } from './definitions';
 
 // Получить все посты
 export async function getPosts(): Promise<Post[]> {
@@ -12,14 +12,18 @@ export async function getPosts(): Promise<Post[]> {
 }
 
 // Получить один пост
-export async function getPost(id: string): Promise<Post> {
+export async function getPost(id: string): Promise<PostById> {
   const { data } = await supabase
     .from('posts')
-    .select('*')
+    .select(
+      `
+      *,
+      users(id, name, avatar_url)
+    `
+    )
     .eq('id', id)
     .single();
-
-  return data as Post;
+  return data as PostById;
 }
 
 export async function getUserPosts(userId: string): Promise<Post[]> {
@@ -67,4 +71,9 @@ export async function getLikesCount(postId: string): Promise<number> {
     .eq('post_id', postId);
 
   return count ?? 0;
+}
+
+export async function getUsers(): Promise<User[]> {
+  const { data } = await supabase.from('users').select('*');
+  return data as User[];
 }

@@ -1,26 +1,64 @@
+import Image from 'next/image';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+
 type Post = {
+  id: string;
   title: string;
   content: string;
   created_at: string;
+  image_url?: string;
+  users: {
+    name: string;
+    avatar_url?: string;
+  };
 };
 
-export default function PostDetail({ post }: { post: Post }) {
+export default async function PostDetail({ post }: { post: Post }) {
+  const user = post.users;
   return (
     <>
-      <h1 className="text-3xl font-medium text-gray-900 mt-4 mb-1 dark:text-gray-400">
-        {post.title}
-      </h1>
-      <p className="text-xs text-gray-400 mb-8 pb-2 border-b border-gray-100">
-        myBlog ·{' '}
-        {new Date(post.created_at).toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        })}
-      </p>
-      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap dark:text-gray-400">
-        {post.content}
-      </p>
+      <div>
+        <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          {post.title}
+        </h1>
+
+        {/* Автор + дата */}
+        <div className="flex items-center gap-4 text-sm text-gray-600 mb-8 pb-4">
+          <div className="flex items-center gap-2">
+            <Avatar size="sm">
+              <AvatarImage src={user?.avatar_url} alt={user?.name} />
+              <AvatarFallback>{user?.name?.[0]?.toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <span className="font-medium">{user?.name || 'Unknown'}</span>
+          </div>
+          <span className="text-gray-500">
+            {new Date(post.created_at).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            })}
+          </span>
+        </div>
+      </div>
+
+      {/* Картинка */}
+      {post.image_url && (
+        <Image
+          src={post.image_url}
+          alt={post.title}
+          width={800}
+          height={500}
+          className="w-full h-auto object-cover my-6"
+          priority
+        />
+      )}
+
+      {/* Контент */}
+      <div className="prose dark:prose-invert max-w-none">
+        <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+          {post.content}
+        </p>
+      </div>
     </>
   );
 }

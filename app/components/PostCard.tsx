@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { ChatBubbleOvalLeftIcon } from '@heroicons/react/20/solid';
 import { MessageCircle } from 'lucide-react';
 
 type Post = {

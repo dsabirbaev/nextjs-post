@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'kcmuujknqimamcrrqgcp.supabase.co',
-        port: '',
-        pathname: '/my-bucket/**',
-        search: '',
       },
     ],
   },

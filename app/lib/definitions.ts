@@ -7,6 +7,21 @@ export type Post = {
   comments: { count: number }[]; // ← добавляем поле для количества комментариев
 };
 
+export type PostById = {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  image_url?: string;
+  user_id: string; // ← добавь
+  users?: {
+    // ← или используй JOIN
+    id: string;
+    name: string;
+    avatar_url?: string;
+  };
+};
+
 export type User = {
   id: string;
   name: string;
