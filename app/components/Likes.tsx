@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { HandThumbUpIcon, HandThumbDownIcon } from '@heroicons/react/20/solid';
+import { ThumbsUp, ThumbsDown } from 'lucide-react';
 import { createLike, createDisLike } from '@/lib/actions';
 
 type Props = {
@@ -27,7 +28,7 @@ export default function Likes({
               variant="outline"
               className="cursor-pointer group hover:border-green-300"
             >
-              <HandThumbUpIcon className="w-3 h-3 text-gray-400 group-hover:text-green-600" />
+              <ThumbsUp className="w-3 h-3 text-gray-400 group-hover:text-green-600" />
               <span className="text-gray-400">{likesCount}</span>
             </Button>
           </form>
@@ -38,7 +39,7 @@ export default function Likes({
               variant="outline"
               className="cursor-pointer group hover:border-red-300"
             >
-              <HandThumbDownIcon className="w-3 h-3 text-gray-400 group-hover:text-red-600" />
+              <ThumbsDown className="w-3 h-3 text-gray-400 group-hover:text-red-600" />
             </Button>
           </form>
         </div>

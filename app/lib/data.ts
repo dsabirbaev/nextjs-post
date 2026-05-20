@@ -17,12 +17,19 @@ export async function getPost(id: string): Promise<PostById> {
     .from('posts')
     .select(
       `
-      *,
-      users(id, name, avatar_url)
+      id,
+      title,
+      content,
+      created_at,
+      image_url,
+      users(id, name, avatar_url),
+      comments(count),
+      likes(count)
     `
     )
     .eq('id', id)
     .single();
+
   return data as PostById;
 }
 

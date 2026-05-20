@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-
+import { MessageCircle, Heart } from 'lucide-react';
 type Post = {
   id: string;
   title: string;
@@ -15,6 +15,16 @@ type Post = {
 
 export default async function PostDetail({ post }: { post: Post }) {
   const user = post.users;
+  function getReadingTime(text: string) {
+    const wordsPerMinute = 225;
+
+    const words = text
+      .replace(/<[^>]*>/g, '') // если HTML
+      .trim()
+      .split(/\s+/).length;
+
+    return Math.max(1, Math.ceil(words / wordsPerMinute));
+  }
   return (
     <>
       <div>
@@ -23,7 +33,7 @@ export default async function PostDetail({ post }: { post: Post }) {
         </h1>
 
         {/* Автор + дата */}
-        <div className="flex items-center gap-4 text-sm text-gray-600 mb-8 pb-4">
+        <div className="flex items-center gap-6 text-sm text-gray-500 mb-6">
           <div className="flex items-center gap-2">
             <Avatar size="sm">
               <AvatarImage src={user?.avatar_url} alt={user?.name} />
@@ -31,13 +41,27 @@ export default async function PostDetail({ post }: { post: Post }) {
             </Avatar>
             <span className="font-medium">{user?.name || 'Unknown'}</span>
           </div>
-          <span className="text-gray-500">
-            {new Date(post.created_at).toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </span>
+          <div className="flex gap-2">
+            <div>{getReadingTime(post.content)} min read</div>
+            <span className="text-gray-500">
+              {new Date(post.created_at).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex gap-3 text-sm border-y py-4">
+        <div className="flex gap-2 items-center">
+          <MessageCircle className="w-4 h-4" />
+          <span>{post.comments?.[0]?.count || 0}</span>
+        </div>
+        <div className="flex gap-2 items-center">
+          <Heart className="w-4 h-4 " />
+          <span>{post.likes?.[0]?.count || 0}</span>
         </div>
       </div>
 

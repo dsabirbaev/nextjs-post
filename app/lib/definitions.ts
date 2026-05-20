@@ -13,13 +13,12 @@ export type PostById = {
   content: string;
   created_at: string;
   image_url?: string;
-  user_id: string; // ← добавь
-  users?: {
-    // ← или используй JOIN
-    id: string;
+  users: {
     name: string;
     avatar_url?: string;
   };
+  comments: [{ count: number }];
+  likes: [{ count: number }];
 };
 
 export type User = {
