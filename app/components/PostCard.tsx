@@ -28,7 +28,7 @@ export default function PostCard({ post }: { post: Post }) {
           <span>{user?.name || 'Unknown'}</span>
         </div>
       </div>
-      <div className="py-2 flex justify-between">
+      <div className="py-2 flex gap-1 justify-between">
         <div>
           <div className="flex items-center gap-2 text-4xl font-bold mb-2">
             {post.title}
@@ -39,8 +39,8 @@ export default function PostCard({ post }: { post: Post }) {
           <Image
             src={post.image_url}
             alt={post.title}
-            width={250}
-            height={250}
+            width={200}
+            height={200}
             className="object-cover"
           />
         )}

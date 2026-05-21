@@ -29,7 +29,10 @@ export default function CreatePostPage() {
 
   useEffect(() => {
     if (state === 'success') {
-      toast.success('Post published successfully');
+      toast.success('Post published successfully', {
+        position: 'top-center',
+        className: '!bg-green-50 !text-green-700 !border-green-200',
+      });
       router.push('/');
     }
   }, [state, router]);

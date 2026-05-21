@@ -4,7 +4,6 @@ import PostCard from '@/components/PostCard';
 
 export default async function PostList() {
   const posts = await getPosts();
-  console.log('Fetched posts:', posts);
   return (
     <>
       {posts.map((post) => (
