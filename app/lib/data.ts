@@ -6,7 +6,7 @@ import { Post, Comment, User, PostById } from './definitions';
 export async function getPosts(): Promise<Post[]> {
   const { data } = await supabase
     .from('posts')
-    .select('*, comments(count)')
+    .select('*,users(id, name, avatar_url), comments(count), likes(count)')
     .order('created_at', { ascending: false });
   return data as Post[];
 }

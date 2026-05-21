@@ -1,44 +1,67 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { MessageCircle } from 'lucide-react';
-
+import { MessageCircle, Heart } from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import Image from 'next/image';
 type Post = {
   id: string;
   title: string;
   content: string;
   created_at: string;
   comments?: { count: number }[];
+  image_url?: string;
+  likes?: { count: number }[];
+  users: {
+    name: string;
+    avatar_url?: string;
+  };
 };
 
 export default function PostCard({ post }: { post: Post }) {
+  const user = post?.users;
   return (
-    <Card className="w-full hover:border-gray-300 transition-colors cursor-pointer">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-4xl font-bold">
-          {post.title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-lg text-gray-500 line-clamp-2">{post.content}</p>
-      </CardContent>
-      <CardFooter className="bg-transparent">
-        <p className="text-xs text-gray-400">
+    <div className="border-b py-6">
+      <div className="py-2">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Avatar size="sm">
+            <AvatarImage src={user?.avatar_url} alt={user?.name} />
+            <AvatarFallback>{user?.name?.[0]?.toUpperCase()}</AvatarFallback>
+          </Avatar>
+          <span>{user?.name || 'Unknown'}</span>
+        </div>
+      </div>
+      <div className="py-2 flex justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-4xl font-bold mb-2">
+            {post.title}
+          </div>
+          <p className="text-lg text-gray-500 line-clamp-2">{post.content}</p>
+        </div>
+        {post.image_url && (
+          <Image
+            src={post.image_url}
+            alt={post.title}
+            width={250}
+            height={250}
+            className="object-cover"
+          />
+        )}
+      </div>
+      <div className="py-2 flex items-center gap-4 text-gray-500 text-sm">
+        <p>
           {new Date(post.created_at).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             year: 'numeric',
           })}
         </p>
-        <div className="text-md font-normal text-black flex items-center gap-1">
-          <MessageCircle className="w-4 h-4 text-black" />
-          {post.comments?.[0]?.count ?? 0}
+        <div className="flex gap-1 items-center">
+          <MessageCircle className="w-4 h-4 fill-gray-500 stroke-none" />
+          <span>{post.comments?.[0]?.count || 0}</span>
         </div>
-      </CardFooter>
-    </Card>
+        <div className="flex gap-1 items-center">
+          <Heart className="w-4 h-4 fill-gray-500 stroke-none" />
+          <span>{post.likes?.[0]?.count || 0}</span>
+        </div>
+      </div>
+    </div>
   );
 }
