@@ -1,9 +1,8 @@
 'use client';
-import { useEffect, useActionState } from 'react';
+
 import Link from 'next/link';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { deletePost } from '@/lib/actions';
 import {
   Table,
   TableBody,
@@ -12,8 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { toast } from 'sonner';
-import { Spinner } from './ui/spinner';
+import DeletePostButton from './DeletePostButton';
 
 type Post = {
   id: string;
@@ -23,19 +21,6 @@ type Post = {
 };
 
 export default function UserPostList({ posts }: { posts: Post[] }) {
-  const [state, formAction, isPending] = useActionState(deletePost, undefined);
-
-  useEffect(() => {
-    if (state === 'success') {
-      toast.success('Post deleted successfully', {
-        position: 'top-center',
-        className: '!bg-green-50 !text-green-700 !border-green-200',
-      });
-    } else if (state) {
-      toast.error(state);
-    }
-  }, [state]);
-
   if (!posts.length) {
     return <p className="text-center text-sm text-gray-400 py-10">No Posts</p>;
   }
@@ -70,26 +55,7 @@ export default function UserPostList({ posts }: { posts: Post[] }) {
                     </Link>
                   </Button>
 
-                  <form action={formAction} style={{ display: 'inline' }}>
-                    <input type="hidden" name="postId" value={post.id} />
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      disabled={isPending}
-                      type="submit"
-                      className="cursor-pointer"
-                    >
-                      {isPending ? (
-                        <>
-                          <span>Deleting</span> <Spinner className="size-4" />
-                        </>
-                      ) : (
-                        <>
-                          <span>Delete</span> <Trash2 className="size-4" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
+                  <DeletePostButton postId={post.id} />
                 </div>
               </TableCell>
             </TableRow>

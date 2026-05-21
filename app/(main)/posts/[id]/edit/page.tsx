@@ -20,7 +20,7 @@ export default async function EditPage({
   const post = await getPost(id);
 
   // только автор может редактировать
-  if (!post || session?.user?.id !== post.user_id) {
+  if (!post || session?.user?.id !== post?.users?.id) {
     redirect('/');
   }
 

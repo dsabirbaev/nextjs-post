@@ -38,7 +38,7 @@ export default function Comments({ postId, comments, isLoggedIn }: Props) {
     comments.filter((c) => c.reply_id === commentId);
 
   return (
-    <div className="mt-10 border-t border-gray-100 pt-8">
+    <div className="mt-5">
       <h2 className="text-lg font-medium text-gray-900 mb-6 dark:text-white">
         Comments ({comments.length})
       </h2>
