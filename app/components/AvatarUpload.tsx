@@ -52,12 +52,14 @@ export default function AvatarUpload({ currentAvatar, userName }: Props) {
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
           {preview ? (
+            /* eslint-disable @next/next/no-img-element */
             <img
               src={preview}
               alt="Preview"
               className="w-full h-full object-cover"
             />
           ) : currentAvatar ? (
+            /* eslint-disable @next/next/no-img-element */
             <img
               src={currentAvatar}
               alt="Avatar"
