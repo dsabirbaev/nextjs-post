@@ -2,14 +2,17 @@ import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { MessageCircle, Heart } from 'lucide-react';
 import { PostById } from '@/lib/definitions';
+import { Suspense } from 'react';
+import { ImageSkeleton } from '@/ui/skeletons';
 
 export default async function PostDetail({ post }: { post: PostById }) {
   const user = post.users;
+  console.log('PostDetail user:', post);
   function getReadingTime(text: string) {
     const wordsPerMinute = 225;
 
     const words = text
-      .replace(/<[^>]*>/g, '') // если HTML
+      .replace(/<[^>]*>/g, '')
       .trim()
       .split(/\s+/).length;
 
@@ -55,16 +58,21 @@ export default async function PostDetail({ post }: { post: PostById }) {
         </div>
       </div>
 
-      {/* Картинка */}
       {post.image_url && (
-        <Image
-          src={post.image_url}
-          alt={post.title}
-          width={800}
-          height={500}
-          className="w-full h-auto object-cover my-6"
-          priority
-        />
+        <Suspense fallback={<ImageSkeleton />}>
+          <Image
+            src={post.image_url}
+            alt={post.title}
+            width={800}
+            height={500}
+            className="w-full h-auto object-cover my-6 rounded-lg"
+            priority={false}
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, 800px"
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'%3E%3Crect fill='%23f3f4f6' width='800' height='500'/%3E%3C/svg%3E"
+          />
+        </Suspense>
       )}
 
       {/* Контент */}

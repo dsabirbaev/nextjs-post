@@ -89,3 +89,9 @@ export default function PostCommentsSkeleton() {
     </div>
   );
 }
+
+export function ImageSkeleton() {
+  return (
+    <div className="my-6 w-full h-96 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+  );
+}
