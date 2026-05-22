@@ -39,8 +39,8 @@ export default function PostCard({ post }: { post: Post }) {
           <Image
             src={post.image_url}
             alt={post.title}
-            width={200}
-            height={200}
+            width={160}
+            height={160}
             className="object-cover"
           />
         )}

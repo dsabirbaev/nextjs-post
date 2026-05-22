@@ -11,7 +11,6 @@ export default function DeletePostButton({ postId }: { postId: string }) {
 
   useEffect(() => {
     if (state === 'success') {
-      console.log('Post deleted successfully');
       toast.success('Post deleted successfully', {
         position: 'top-center',
         className: '!bg-green-50 !text-green-700 !border-green-200',
@@ -22,7 +21,7 @@ export default function DeletePostButton({ postId }: { postId: string }) {
   }, [state]);
 
   return (
-    <form action={formAction} style={{ display: 'inline' }}>
+    <form action={formAction}>
       <input type="hidden" name="postId" value={postId} />
       <Button
         variant="destructive"
