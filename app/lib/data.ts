@@ -30,7 +30,13 @@ export async function getPost(id: string): Promise<PostById> {
     .eq('id', id)
     .single();
 
-  return data as PostById;
+  if (!data) {
+    throw new Error('Post not found');
+  }
+  return {
+    ...data,
+    users: data.users[0],
+  };
 }
 
 export async function getUserPosts(userId: string): Promise<Post[]> {

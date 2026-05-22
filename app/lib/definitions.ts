@@ -27,8 +27,8 @@ export type PostById = {
     name: string;
     avatar_url?: string;
   };
-  comments: [{ count: number }];
-  likes: [{ count: number }];
+  comments: { count: number }[];
+  likes: { count: number }[];
 };
 
 export type User = {
