@@ -1,19 +1,7 @@
 import { MessageCircle, Heart } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Image from 'next/image';
-type Post = {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  comments?: { count: number }[];
-  image_url?: string;
-  likes?: { count: number }[];
-  users: {
-    name: string;
-    avatar_url?: string;
-  };
-};
+import { Post } from '@/lib/definitions';
 
 export default function PostCard({ post }: { post: Post }) {
   const user = post?.users;

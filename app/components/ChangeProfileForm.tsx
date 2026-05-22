@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+
 import { getData } from 'country-list';
 
 type Props = {
@@ -98,7 +99,7 @@ export default function ChangeProfileForm({ user }: Props) {
                 <SelectValue placeholder="Select country" />
               </SelectTrigger>
               <SelectContent>
-                {countries.map((c) => (
+                {countries.map((c: { code: string; name: string }) => (
                   <SelectItem key={c.code} value={c.name}>
                     {c.name}
                   </SelectItem>

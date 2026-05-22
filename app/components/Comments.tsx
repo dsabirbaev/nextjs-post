@@ -8,18 +8,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
-
-type Comment = {
-  id: string;
-  content: string;
-  user_id: string;
-  post_id: string;
-  reply_id: string | null;
-  created_at: string;
-  users: {
-    name: string;
-  };
-};
+import { Comment } from '@/lib/definitions';
 
 type Props = {
   postId: string;

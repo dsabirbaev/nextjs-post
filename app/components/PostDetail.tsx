@@ -1,19 +1,9 @@
 import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { MessageCircle, Heart } from 'lucide-react';
-type Post = {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  image_url?: string;
-  users: {
-    name: string;
-    avatar_url?: string;
-  };
-};
+import { PostById } from '@/lib/definitions';
 
-export default async function PostDetail({ post }: { post: Post }) {
+export default async function PostDetail({ post }: { post: PostById }) {
   const user = post.users;
   function getReadingTime(text: string) {
     const wordsPerMinute = 225;
