@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { auth } from '@/../auth';
-import NavLinks from './NavLinks';
+// import NavLinks from './NavLinks';
 import ModeToggle from './ModeToggle';
 import NavbarDropdownMenu from './NavbarDropdownMenu';
 
@@ -20,7 +20,7 @@ export default async function Navbar() {
         />
       </Link>
 
-      <NavLinks />
+      {/* <NavLinks /> */}
 
       {isLoggedIn ? (
         <div className="flex gap-2">
