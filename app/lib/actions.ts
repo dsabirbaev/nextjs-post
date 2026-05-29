@@ -102,18 +102,48 @@ export async function deletePost(
   const session = await auth();
   if (!session?.user) redirect('/login');
 
-  const id = formData.get('postId') as string; // ← получи id из formData
+  const id = formData.get('postId') as string;
 
-  const { error } = await supabase
-    .from('posts')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', session.user.id);
+  try {
+    // 1️⃣ Получи пост
+    const { data: post, error: fetchError } = await supabase
+      .from('posts')
+      .select('image_url')
+      .eq('id', id)
+      .eq('user_id', session.user.id)
+      .single();
 
-  if (error) return 'Failed to delete post';
+    if (fetchError || !post) return 'Post not found';
 
-  revalidatePath('/profile');
-  return 'success'; // ← вернуть вместо redirect
+    // 2️⃣ Удали картинку
+    if (post.image_url) {
+      const fileName = post.image_url.split('/').pop();
+
+      const { error: storageError, data } = await supabase.storage
+        .from('post-images')
+        .remove([fileName]);
+
+      if (storageError) {
+        console.error('Failed to delete from storage:', storageError);
+        return `Storage error: ${storageError.message}`; // ← return ошибку вместо continue
+      }
+    }
+
+    // 3️⃣ Удали пост
+    const { error: deleteError } = await supabase
+      .from('posts')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', session.user.id);
+
+    if (deleteError) return 'Failed to delete post';
+
+    revalidatePath('/profile');
+    return 'success';
+  } catch (error) {
+    console.error('Delete post error:', error);
+    return 'Something went wrong';
+  }
 }
 
 // Next Auth функции для регистрации, логина и логаута юзера
