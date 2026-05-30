@@ -3,11 +3,12 @@ import { supabase } from './supabase';
 import { Post, Comment, User, PostById } from './definitions';
 
 // Получить все посты
-export async function getPosts(): Promise<Post[]> {
+export async function getPosts(offset: number = 0): Promise<Post[]> {
   const { data } = await supabase
     .from('posts')
     .select('*,users(id, name, avatar_url), comments(count), likes(count)')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(offset, offset + 9); // ← 10 постов (0-9, 10-19, и т.д.)
   return data as Post[];
 }
 

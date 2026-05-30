@@ -1,16 +1,15 @@
 import { getPosts } from '@/lib/data';
 import Link from 'next/link';
 import PostCard from '@/components/PostCard';
+import PostListInfinite from '@/components/PostListInfinite';
 
 export default async function PostList() {
-  const posts = await getPosts();
+  const initialPosts = await getPosts(0);
   return (
     <>
-      {posts.map((post) => (
-        <Link href={`/posts/${post.id}`} key={post.id}>
-          <PostCard post={post} />
-        </Link>
-      ))}
+      <main>
+        <PostListInfinite initialPosts={initialPosts} />
+      </main>
     </>
   );
 }

@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/../auth';
 import { unstable_update } from '@/../auth';
 import { ProfileUpdates } from './definitions';
+import { Post } from './definitions';
 
 // Создать пост
 export async function createPost(
@@ -66,6 +67,22 @@ export async function createPost(
   } catch (error) {
     console.error('Create post error:', error);
     return 'Something went wrong';
+  }
+}
+
+// Load more posts (для бесконечной прокрутки)
+export async function loadMorePosts(offset: number): Promise<Post[] | string> {
+  try {
+    const { data } = await supabase
+      .from('posts')
+      .select('*,users(id, name, avatar_url), comments(count), likes(count)')
+      .order('created_at', { ascending: false })
+      .range(offset, offset + 9);
+
+    return data as Post[];
+  } catch (error) {
+    console.error('Load more posts error:', error);
+    return 'Failed to load posts';
   }
 }
 
