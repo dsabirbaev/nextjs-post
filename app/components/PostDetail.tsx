@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { MessageCircle, Heart } from 'lucide-react';
+import { MessageCircle, Heart, Eye } from 'lucide-react';
 import { PostById } from '@/lib/definitions';
 import { Suspense } from 'react';
 import { ImageSkeleton } from '@/ui/skeletons';
@@ -48,6 +48,10 @@ export default async function PostDetail({ post }: { post: PostById }) {
       </div>
 
       <div className="flex gap-3 text-sm border-y py-4">
+        <div className="flex items-center gap-1">
+          <Eye className="w-4 h-4" />
+          {post.views || 0}
+        </div>
         <div className="flex gap-2 items-center">
           <MessageCircle className="w-4 h-4" />
           <span>{post.comments?.[0]?.count || 0}</span>

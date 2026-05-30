@@ -18,11 +18,7 @@ export async function getPost(id: string): Promise<PostById> {
     .from('posts')
     .select(
       `
-      id,
-      title,
-      content,
-      created_at,
-      image_url,
+      *,
       users(id, name, avatar_url),
       comments(count),
       likes(count)

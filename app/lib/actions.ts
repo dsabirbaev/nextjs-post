@@ -86,6 +86,26 @@ export async function loadMorePosts(offset: number): Promise<Post[] | string> {
   }
 }
 
+// Views
+export async function incrementPostViews(postId: string): Promise<void> {
+  try {
+    // Получи текущие views
+    const { data: post } = await supabase
+      .from('posts')
+      .select('views')
+      .eq('id', postId)
+      .single();
+
+    // Increment на 1
+    await supabase
+      .from('posts')
+      .update({ views: (post?.views || 0) + 1 })
+      .eq('id', postId);
+  } catch (error) {
+    console.error('Increment views error:', error);
+  }
+}
+
 // Обновить пост
 export async function updatePost(
   id: string,

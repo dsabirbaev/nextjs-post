@@ -5,7 +5,7 @@ export type Post = {
   user_id: string;
   created_at: string;
   image_url?: string;
-
+  views?: number;
   users: {
     id: string;
     name: string;
@@ -22,6 +22,7 @@ export type PostById = {
   content: string;
   created_at: string;
   image_url?: string;
+  views?: number;
   users: {
     id: string;
     name: string;

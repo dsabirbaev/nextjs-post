@@ -10,6 +10,7 @@ import PostDetail from '@/components/PostDetail';
 import PostComments from '@/components/PostComments';
 import { Suspense } from 'react';
 import PostCommentsSkeleton from '@/ui/skeletons';
+import { incrementPostViews } from '@/lib/actions';
 
 export const metadata: Metadata = {
   title: 'Post Details',
@@ -21,6 +22,8 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  await incrementPostViews(id);
 
   // ✅ сначала session
   const session = await auth();

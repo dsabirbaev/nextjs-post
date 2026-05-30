@@ -1,4 +1,4 @@
-import { MessageCircle, Heart } from 'lucide-react';
+import { MessageCircle, Heart, Eye } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Image from 'next/image';
 import { Post } from '@/lib/definitions';
@@ -41,6 +41,10 @@ export default function PostCard({ post }: { post: Post }) {
             year: 'numeric',
           })}
         </p>
+        <div className="flex items-center gap-1">
+          <Eye className="w-4 h-4" />
+          {post.views || 0}
+        </div>
         <div className="flex gap-1 items-center">
           <MessageCircle className="w-4 h-4 fill-gray-500 stroke-none" />
           <span>{post.comments?.[0]?.count || 0}</span>
