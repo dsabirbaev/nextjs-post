@@ -80,18 +80,73 @@ export async function updatePost(
 
   const title = formData.get('title') as string;
   const content = formData.get('content') as string;
+  const image = formData.get('image') as File;
 
   if (!title || !content) return 'Title and content are required';
 
-  const { error } = await supabase
-    .from('posts')
-    .update({ title, content })
-    .eq('id', id)
-    .eq('user_id', session.user.id);
+  // Валидация картинки если есть
+  if (image && image.size > 0) {
+    if (image.size > 5 * 1024 * 1024) return 'Image too large (max 5MB)';
+    if (!image.type.startsWith('image/')) return 'Only images allowed';
+  }
 
-  if (error) return 'Something went wrong';
-  revalidatePath('/profile');
-  return 'success'; // ← вернуть вместо redirect
+  try {
+    // 1️⃣ Получи старый пост (для удаления старой картинки)
+    const { data: oldPost } = await supabase
+      .from('posts')
+      .select('image_url')
+      .eq('id', id)
+      .eq('user_id', session.user.id)
+      .single();
+
+    let imageUrl = oldPost?.image_url; // ← сохрани старый URL если нет новой
+
+    // 2️⃣ Если загружена новая картинка
+    if (image && image.size > 0) {
+      // Удали старую картинку из storage
+      if (oldPost?.image_url) {
+        const oldFileName = oldPost.image_url.split('/').pop();
+        if (oldFileName) {
+          await supabase.storage.from('post-images').remove([oldFileName]);
+        }
+      }
+
+      // Загрузи новую картинку
+      const fileName = `${session.user.id}_${Date.now()}.jpg`;
+      const { error: uploadError } = await supabase.storage
+        .from('post-images')
+        .upload(fileName, image);
+
+      if (uploadError) return 'Image upload failed';
+
+      // Получи публичный URL
+      const { data } = supabase.storage
+        .from('post-images')
+        .getPublicUrl(fileName);
+
+      imageUrl = `${data.publicUrl}?t=${Date.now()}`; // ← cache busting
+    }
+
+    // 3️⃣ Обнови пост в БД
+    const { error } = await supabase
+      .from('posts')
+      .update({
+        title,
+        content,
+        image_url: imageUrl,
+      })
+      .eq('id', id)
+      .eq('user_id', session.user.id);
+
+    if (error) return 'Something went wrong';
+
+    revalidatePath('/profile');
+    revalidatePath(`/posts/${id}`);
+    return 'success';
+  } catch (error) {
+    console.error('Update post error:', error);
+    return 'Something went wrong';
+  }
 }
 
 // Удалить пост
