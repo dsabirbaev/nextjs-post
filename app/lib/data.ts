@@ -36,7 +36,7 @@ export async function getPost(id: string): Promise<PostById> {
 export async function getUserPosts(userId: string): Promise<Post[]> {
   const { data } = await supabase
     .from('posts')
-    .select('*')
+    .select('*,users(id, name, avatar_url), comments(count), likes(count)')
     .eq('user_id', userId) // ← фильтр в базе
     .order('created_at', { ascending: false });
 
