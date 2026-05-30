@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
 export default function Sidebar() {
-  const pathname = usePathname();
   return (
     <aside className="w-64 bg-gray-50 border-r border-gray-200 dark:bg-gray-900 dark:border-gray-800">
       <nav className="p-4 space-y-2">
@@ -28,7 +27,17 @@ export default function Sidebar() {
   );
 }
 
-function SidebarLink({ href, icon, label, pathname }: any) {
+function SidebarLink({
+  href,
+  icon,
+  label,
+  pathname,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+  pathname: string;
+}) {
   const isActive = usePathname() === pathname;
   return (
     <Link

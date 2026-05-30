@@ -1,4 +1,3 @@
-import Link from 'next/link';
 export default async function Footer() {
   return (
     <footer className="border-t mt-2">
