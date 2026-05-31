@@ -4,6 +4,7 @@ import { auth } from '@/../auth';
 // import NavLinks from './NavLinks';
 import ModeToggle from './ModeToggle';
 import NavbarDropdownMenu from './NavbarDropdownMenu';
+import SearchInput from './SearchInput ';
 
 export default async function Navbar() {
   const session = await auth();
@@ -21,6 +22,8 @@ export default async function Navbar() {
       </Link>
 
       {/* <NavLinks /> */}
+
+      <SearchInput />
 
       {isLoggedIn ? (
         <div className="flex gap-2">
