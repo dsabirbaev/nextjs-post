@@ -46,11 +46,11 @@ export default function PostCard({ post }: { post: Post }) {
           {post.views || 0}
         </div>
         <div className="flex gap-1 items-center">
-          <MessageCircle className="w-4 h-4 fill-gray-500 stroke-none" />
+          <MessageCircle className="w-4 h-4 fill-white dark:fill-transparent" />
           <span>{post.comments?.[0]?.count || 0}</span>
         </div>
         <div className="flex gap-1 items-center">
-          <Heart className="w-4 h-4 fill-gray-500 stroke-none" />
+          <Heart className="w-4 h-4 fill-white dark:fill-transparent" />
           <span>{post.likes?.[0]?.count || 0}</span>
         </div>
       </div>
