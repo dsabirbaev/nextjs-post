@@ -8,6 +8,7 @@ import { Spinner } from '@/components/ui/spinner';
 import Link from 'next/link';
 import { Post } from '@/lib/definitions';
 import { X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export default function SearchInput() {
   const [query, setQuery] = useState('');
@@ -44,8 +45,13 @@ export default function SearchInput() {
   const searchPosts = async (q: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-      const data = await response.json();
+      const { data } = await supabase
+        .from('posts')
+        .select('*,users(id, name, avatar_url), comments(count), likes(count)')
+        .or(`title.ilike.%${q}%,content.ilike.%${q}%`)
+        .order('created_at', { ascending: false })
+        .limit(8);
+
       setResults(data || []);
       setIsOpen(true);
     } catch (error) {
