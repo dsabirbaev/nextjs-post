@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDebounce } from 'use-debounce'; // ← импортируй
 import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -19,12 +19,7 @@ export default function SearchInput() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const searchPosts = useCallback(async (q: string) => {
-    if (!q.trim()) {
-      setResults([]);
-      setIsOpen(false);
-      return;
-    }
+  const searchPosts = async (q: string) => {
     setIsLoading(true);
     try {
       const { data } = await supabase
@@ -40,11 +35,17 @@ export default function SearchInput() {
       console.error('Search error:', error);
     }
     setIsLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
+    if (!debouncedQuery.trim()) {
+      setResults([]);
+      setIsOpen(false);
+      return;
+    }
+
     searchPosts(debouncedQuery);
-  }, [debouncedQuery, searchPosts]);
+  }, [debouncedQuery]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
