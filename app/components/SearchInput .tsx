@@ -1,14 +1,15 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useDebounce } from 'use-debounce'; // ← импортируй
 import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import Link from 'next/link';
 import { Post } from '@/lib/definitions';
-import { X } from 'lucide-react';
+import { X, Form } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import Image from 'next/image';
 
 export default function SearchInput() {
   const [query, setQuery] = useState('');
@@ -18,31 +19,12 @@ export default function SearchInput() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!debouncedQuery.trim()) {
+  const searchPosts = useCallback(async (q: string) => {
+    if (!q.trim()) {
       setResults([]);
       setIsOpen(false);
       return;
     }
-
-    searchPosts(debouncedQuery);
-  }, [debouncedQuery]);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const searchPosts = async (q: string) => {
     setIsLoading(true);
     try {
       const { data } = await supabase
@@ -58,7 +40,25 @@ export default function SearchInput() {
       console.error('Search error:', error);
     }
     setIsLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    searchPosts(debouncedQuery);
+  }, [debouncedQuery, searchPosts]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleClear = () => {
     setQuery('');
@@ -112,12 +112,18 @@ export default function SearchInput() {
                   className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
                 >
                   <div className="flex gap-3">
-                    {post.image_url && (
-                      <img
+                    {post.image_url ? (
+                      <Image
                         src={post.image_url}
                         alt=""
                         className="w-10 h-10 object-cover rounded"
+                        width="100"
+                        height="100"
                       />
+                    ) : (
+                      <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
+                        <Form />
+                      </div>
                     )}
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm truncate text-gray-900 dark:text-white">
