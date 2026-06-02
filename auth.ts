@@ -4,7 +4,6 @@ import bcrypt from 'bcryptjs';
 import { supabase } from '@/lib/supabase';
 import Google from 'next-auth/providers/google';
 import GitHub from 'next-auth/providers/github';
-import Twitter from 'next-auth/providers/twitter';
 
 export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   providers: [
@@ -111,46 +110,6 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
             name: profile.name || profile.login,
             email: profile.email,
             avatar_url: profile.avatar_url,
-          })
-          .select()
-          .single();
-
-        return {
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email,
-          avatar_url: newUser.avatar_url,
-        };
-      },
-    }),
-
-    // ✅ Twitter
-    Twitter({
-      clientId: process.env.TWITTER_CLIENT_ID!,
-      clientSecret: process.env.TWITTER_CLIENT_SECRET!,
-      version: '2.0', // ← важно для Twitter v2
-      async profile(profile) {
-        const { data: existingUser } = await supabase
-          .from('users')
-          .select('*')
-          .eq('email', profile.email || profile.username)
-          .single();
-
-        if (existingUser) {
-          return {
-            id: existingUser.id,
-            name: existingUser.name,
-            email: existingUser.email,
-            avatar_url: existingUser.avatar_url || profile.image,
-          };
-        }
-
-        const { data: newUser } = await supabase
-          .from('users')
-          .insert({
-            name: profile.name,
-            email: profile.email || `${profile.username}@twitter.local`,
-            avatar_url: profile.image,
           })
           .select()
           .single();

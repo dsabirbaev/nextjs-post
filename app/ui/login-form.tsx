@@ -21,6 +21,7 @@ import {
   InputGroupInput,
 } from '@/components/ui/input-group';
 import { signIn } from 'next-auth/react';
+import { FaGithub, FaGoogle } from 'react-icons/fa';
 
 export default function LoginForm() {
   const [errorMessage, formAction, isPending] = useActionState(
@@ -111,35 +112,23 @@ export default function LoginForm() {
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {/* Google */}
             <Button
               onClick={() => signIn('google', { callbackUrl: '/' })}
               variant="outline"
-              className="w-full"
+              className="border-0 cursor-pointer w-full"
             >
-              Google
-              {/* <Mail className="w-4 h-4" /> */}
+              <FaGoogle />
             </Button>
 
             {/* GitHub */}
             <Button
               onClick={() => signIn('github', { callbackUrl: '/' })}
               variant="outline"
-              className="w-full"
+              className="border-0 cursor-pointer w-full"
             >
-              Github
-              {/* <Github className="w-4 h-4" /> */}
-            </Button>
-
-            {/* Twitter */}
-            <Button
-              onClick={() => signIn('twitter', { callbackUrl: '/' })}
-              variant="outline"
-              className="w-full"
-            >
-              Twitter
-              {/* <Twitter className="w-4 h-4" /> */}
+              <FaGithub />
             </Button>
           </div>
           <Field>
