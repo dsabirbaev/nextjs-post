@@ -9,6 +9,7 @@ import { auth } from '@/../auth';
 import { unstable_update } from '@/../auth';
 import { ProfileUpdates } from './definitions';
 import { Post } from './definitions';
+import { loginSchema, FormState } from './schemas';
 
 // Создать пост
 export async function createPost(
@@ -278,9 +279,28 @@ export async function register(
   }
 }
 
-export async function login(prevState: string | undefined, formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+export async function login(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const result = loginSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+  });
+
+  // ✅ Используй flatten() вместо forEach
+  if (!result.success) {
+    const fieldErrors = result.error.flatten().fieldErrors;
+
+    return {
+      errors: {
+        email: fieldErrors.email?.[0],
+        password: fieldErrors.password?.[0],
+      },
+    };
+  }
+
+  const { email, password } = result.data;
 
   try {
     await signIn('credentials', {
@@ -289,11 +309,8 @@ export async function login(prevState: string | undefined, formData: FormData) {
       redirectTo: '/',
     });
   } catch (error) {
-    // ✅ если это redirect — пробрасываем дальше
     if (isRedirectError(error)) throw error;
-
-    // иначе это реальная ошибка — показываем сообщение
-    return 'Invalid email or password';
+    return { message: 'Invalid email or password' };
   }
 }
 

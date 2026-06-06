@@ -7,7 +7,6 @@ import { ImageSkeleton } from '@/ui/skeletons';
 
 export default async function PostDetail({ post }: { post: PostById }) {
   const user = post.users;
-  console.log('PostDetail user:', post);
   function getReadingTime(text: string) {
     const wordsPerMinute = 225;
 

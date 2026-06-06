@@ -22,9 +22,10 @@ import {
 } from '@/components/ui/input-group';
 import { signIn } from 'next-auth/react';
 import { FaGithub, FaGoogle } from 'react-icons/fa';
+import { FormState } from '@/lib/schemas';
 
 export default function LoginForm() {
-  const [errorMessage, formAction, isPending] = useActionState(
+  const [state, formAction, isPending] = useActionState<FormState, FormData>(
     login,
     undefined
   );
@@ -44,7 +45,7 @@ export default function LoginForm() {
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <InputGroup>
               <InputGroupInput
-                type="email"
+                // type="email"
                 name="email"
                 id="email"
                 placeholder="Enter your email"
@@ -53,6 +54,9 @@ export default function LoginForm() {
                 <MailIcon />
               </InputGroupAddon>
             </InputGroup>
+            {state?.errors?.email && (
+              <p className="text-red-500 text-xs mt-1">{state.errors.email}</p>
+            )}
           </Field>
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -65,8 +69,8 @@ export default function LoginForm() {
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter password"
-                minLength={8}
-                required
+                // minLength={8}
+                // required
               />
               <InputGroupAddon align="inline-end">
                 <Button
@@ -83,6 +87,11 @@ export default function LoginForm() {
                 </Button>
               </InputGroupAddon>
             </InputGroup>
+            {state?.errors?.password && (
+              <p className="text-red-500 text-xs mt-1">
+                {state.errors.password}
+              </p>
+            )}
           </Field>
           <Field>
             <Button
@@ -132,10 +141,10 @@ export default function LoginForm() {
             </Button>
           </div>
           <Field>
-            {errorMessage && (
+            {state?.message && (
               <Alert variant="destructive">
                 <AlertCircleIcon className="size-4" />
-                <AlertTitle>{errorMessage}</AlertTitle>
+                <AlertTitle>{state.message}</AlertTitle>
               </Alert>
             )}
           </Field>
