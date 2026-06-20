@@ -9,7 +9,7 @@ import { auth } from '@/../auth';
 import { unstable_update } from '@/../auth';
 import { ProfileUpdates } from './definitions';
 import { Post } from './definitions';
-import { loginSchema, FormState } from './schemas';
+import { loginSchema, FormState, registerSchema } from './schemas';
 
 // Создать пост
 export async function createPost(
