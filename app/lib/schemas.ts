@@ -7,8 +7,7 @@ export const loginSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 
-// ✅ Тип для state
-export type FormState =
+export type LoginFormState =
   | {
       errors?: {
         email?: string;
@@ -18,6 +17,8 @@ export type FormState =
     }
   | undefined;
 
+////////////////////////////////////////////////////////////////////
+
 // ✅ Register form
 export const registerSchema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -26,3 +27,14 @@ export const registerSchema = z.object({
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export type RegisterFormState =
+  | {
+      errors?: {
+        name?: string;
+        email?: string;
+        password?: string;
+      };
+      message?: string;
+    }
+  | undefined;

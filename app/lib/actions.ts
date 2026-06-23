@@ -9,7 +9,12 @@ import { auth } from '@/../auth';
 import { unstable_update } from '@/../auth';
 import { ProfileUpdates } from './definitions';
 import { Post } from './definitions';
-import { loginSchema, FormState, registerSchema } from './schemas';
+import {
+  loginSchema,
+  LoginFormState,
+  registerSchema,
+  RegisterFormState,
+} from './schemas';
 
 // Создать пост
 export async function createPost(
@@ -280,9 +285,9 @@ export async function register(
 }
 
 export async function login(
-  prevState: FormState,
+  prevState: LoginFormState,
   formData: FormData
-): Promise<FormState> {
+): Promise<LoginFormState> {
   const result = loginSchema.safeParse({
     email: formData.get('email'),
     password: formData.get('password'),
